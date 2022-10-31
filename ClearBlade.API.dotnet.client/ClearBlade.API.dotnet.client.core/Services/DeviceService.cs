@@ -13,7 +13,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
     public class DeviceService : IDeviceService
     {
         private readonly ILogger<DeviceService> _logger;
-        private IDevicesAPIContract _api;
+        private IDevicesAPIContract? _api;
 
         /// <summary>
         /// Constructor which initializes logging service
@@ -48,6 +48,8 @@ namespace ClearBlade.API.dotnet.client.core.Services
         public async Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(string system_key, string parentPath)
         {
             _logger.LogInformation("Getting devices list for parent {parentPath}.", parentPath);
+            if(_api == null)
+                return (false, new List<DeviceModel>());
             var response = await _api.GetDevicesList(system_key, parentPath);
             if (response.IsSuccessStatusCode && response.Content != null)
             {

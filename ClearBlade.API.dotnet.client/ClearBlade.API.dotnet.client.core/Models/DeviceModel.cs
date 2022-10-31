@@ -11,12 +11,23 @@ namespace ClearBlade.API.dotnet.client.core.Models
     {
         public DateTime cloudUpdateTime { get; set; }
         public string version { get; set; }
+
+        public Config()
+        {
+            version = String.Empty;
+        }
     }
 
     public class Credential
     {
         public string expirationTime { get; set; }
         public PublicKey publicKey { get; set; }
+
+        public Credential()
+        {
+            expirationTime = String.Empty;
+            publicKey = new PublicKey();
+        }
     }
 
     public class DeviceCollection
@@ -51,18 +62,44 @@ namespace ClearBlade.API.dotnet.client.core.Models
         public string logLevel { get; set; }
         public Metadata metadata { get; set; }
         public GatewayConfig gatewayConfig { get; set; }
+
+        public DeviceModel()
+        {
+            id = string.Empty;
+            name = string.Empty;
+            numId = string.Empty;
+            credentials = new List<Credential>();
+            lastStateTime = string.Empty;
+            lastErrorStatus = new LastErrorStatus();
+            config = new Config();
+            state = new State();
+            logLevel = string.Empty;
+            metadata = new Metadata();
+            gatewayConfig = new GatewayConfig();
+        }
     }
 
     public class GatewayConfig
     {
         public string lastAccessedGatewayId { get; set; }
         public string lastAccessedGatewayTime { get; set; }
+
+        public GatewayConfig()
+        {
+            lastAccessedGatewayId = string.Empty;
+            lastAccessedGatewayTime = string.Empty;
+        }
     }
 
     public class LastErrorStatus
     {
         public int code { get; set; }
         public string message { get; set; }
+
+        public LastErrorStatus()
+        {
+            message = string.Empty;
+        }
     }
 
     public class Metadata
@@ -73,12 +110,24 @@ namespace ClearBlade.API.dotnet.client.core.Models
     {
         public string format { get; set; }
         public string key { get; set; }
+
+        public PublicKey()
+        {
+            format = string.Empty;
+            key = string.Empty;
+        }
     }
 
     public class State
     {
         public string updateTime { get; set; }
         public string binaryData { get; set; }
+
+        public State()
+        {
+            updateTime = String.Empty;
+            binaryData = String.Empty;
+        }
     }
 
 

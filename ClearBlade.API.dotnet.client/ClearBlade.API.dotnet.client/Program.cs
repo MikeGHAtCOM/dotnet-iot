@@ -14,14 +14,17 @@ public class Program
 
         var serviceProvider = serviceCollection.BuildServiceProvider(); 
 
-        var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Program>();
-
-        logger.LogInformation("Starting Tests");
+        var logger = serviceProvider?.GetService<ILoggerFactory>()?.CreateLogger<Program>();
+        if(logger != null)
+            logger.LogInformation("Starting Tests");
 
         //do the actual work here
-        RunTestsAsync(serviceProvider, logger).GetAwaiter().GetResult();
+        if ((serviceProvider != null) && (logger != null))
+        {
+            RunTestsAsync(serviceProvider, logger).GetAwaiter().GetResult();
 
-        logger.LogInformation("All done!");
+            logger.LogInformation("All done!");
+        }
     }
 
     /// <summary>
@@ -32,21 +35,25 @@ public class Program
     /// <returns></returns>
     static async Task RunTestsAsync(ServiceProvider serviceProvider, ILogger logger)
     {
-        MainClient mClient = new MainClient(serviceProvider.GetServices<IDeviceService>().FirstOrDefault());
+        IDeviceService? deviceService = serviceProvider.GetService<IDeviceService>();
+        if (deviceService != null)
+        {
+            MainClient mClient = new MainClient(deviceService);
 
-        // Test-001 - Obtain list of devices for a particular registry
-        // TBD - Need to obtain the token from authorization service
-        logger.LogInformation("Running Test-101 - Obtain list of devices for a particular registry");
-        var result = await mClient.GetDevicesList(  "https://iot-sandbox.clearblade.com",
-                                                    "f6e1d8b30cb0cd8fe8cf95d0dfd001",
-                                                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmZWUxZDhiMzBjODY5MmRiOTZjMGNiODllYzNmIiwic2lkIjoiNjg2MDExZGYtM2VhZS00NjYxLWFlNDYtMGUzNDk4NTBjYzdiIiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjQ4MTcyNzl9.PuzZnogOYym0U7k130oTVqnNwt7RvVGq6G8JZ0SRrss",
-                                                    "projects/ingressdevelopmentenv/locations/us-central1/registries/PD-103-Registry");
-        if(result.Item1 == false)
-            logger.LogInformation("Test-101 - Failed");
-        else
-            logger.LogInformation("Test-101 - Succeeded");
+            // Test-001 - Obtain list of devices for a particular registry
+            // TBD - Need to obtain the token from authorization service
+            logger.LogInformation("Running Test-101 - Obtain list of devices for a particular registry");
+            var result = await mClient.GetDevicesList("https://iot-sandbox.clearblade.com",
+                                                        "f6e1d8b30cb0cd8fe8cf95d0dfd001",
+                                                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmZWUxZDhiMzBjODY5MmRiOTZjMGNiODllYzNmIiwic2lkIjoiNjg2MDExZGYtM2VhZS00NjYxLWFlNDYtMGUzNDk4NTBjYzdiIiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjQ4MTcyNzl9.PuzZnogOYym0U7k130oTVqnNwt7RvVGq6G8JZ0SRrss",
+                                                        "projects/ingressdevelopmentenv/locations/us-central1/registries/PD-103-Registry");
+            if (!result.Item1)
+                logger.LogInformation("Test-101 - Failed");
+            else
+                logger.LogInformation("Test-101 - Succeeded");
 
-        Console.ReadLine();
+            Console.ReadLine();
+        }
     }
 
     private static void ConfigureServices(IServiceCollection services)
