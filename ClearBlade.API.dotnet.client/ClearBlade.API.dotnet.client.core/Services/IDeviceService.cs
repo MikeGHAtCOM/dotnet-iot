@@ -20,9 +20,20 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <summary>
         /// Method to get list of devices.
         /// </summary>
+        /// <param name="version"></param>
         /// <param name="system_key"></param>
         /// <param name="parentPath"></param>
         /// <returns>List of Devices</returns>
-        Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(string system_key, string parentPath);
+        Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(int version, string system_key, string parentPath);
+        /// <summary>
+        /// A generic api to call any post method related to Devices
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="methodName"></param>
+        /// <param name="body"></param>
+        /// <returns>Success / Failure</returns>
+        Task<bool> PostToDevice(int version, string system_key, string deviceName, string methodName, object body);
     }
 }

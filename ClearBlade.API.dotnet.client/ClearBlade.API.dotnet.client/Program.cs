@@ -42,17 +42,62 @@ public class Program
 
             // Test-001 - Obtain list of devices for a particular registry
             // TBD - Need to obtain the token from authorization service
-            logger.LogInformation("Running Test-101 - Obtain list of devices for a particular registry");
-            var result = await mClient.GetDevicesList("https://iot-sandbox.clearblade.com",
+            logger.LogInformation("Running Test-001 - Obtain list of devices for a particular registry");
+            var result = await mClient.GetDevicesList(4, "https://iot-sandbox.clearblade.com",
                                                         "f6e1d8b30cb0cd8fe8cf95d0dfd001",
                                                         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmZWUxZDhiMzBjODY5MmRiOTZjMGNiODllYzNmIiwic2lkIjoiNjg2MDExZGYtM2VhZS00NjYxLWFlNDYtMGUzNDk4NTBjYzdiIiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjQ4MTcyNzl9.PuzZnogOYym0U7k130oTVqnNwt7RvVGq6G8JZ0SRrss",
                                                         "projects/ingressdevelopmentenv/locations/us-central1/registries/PD-103-Registry");
             if (!result.Item1)
-                logger.LogInformation("Test-101 - Failed");
+                logger.LogInformation("Test-001 - Failed");
             else
-                logger.LogInformation("Test-101 - Succeeded");
+            {
+                logger.LogInformation("Test-001 - Succeeded");
 
-            Console.ReadLine();
+                // TBD - Verification of result. This can be done after the end point
+                // for Create Device is done. So that, we can create a device, get list
+                // and verify that it exists.
+            }
+
+            // Test-002 - Send Command to Device
+            // TBD - Need to obtain the token from authorization service
+            logger.LogInformation("Running Test-002 - Send Command to Device");
+            var data = new
+            {
+                binaryData = "QUJD",
+                versionToUpdate = "1"
+            };
+            var result002 = await mClient.SendCommandToDevice(4, "https://iot-sandbox.clearblade.com",
+                                                        "f6e1d8b30cb0cd8fe8cf95d0dfd001",
+                                                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmZWUxZDhiMzBjODY5MmRiOTZjMGNiODllYzNmIiwic2lkIjoiNjg2MDExZGYtM2VhZS00NjYxLWFlNDYtMGUzNDk4NTBjYzdiIiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjQ4MTcyNzl9.PuzZnogOYym0U7k130oTVqnNwt7RvVGq6G8JZ0SRrss",
+                                                        "PD-103-Device", data);
+            if (!result002)
+                logger.LogInformation("Test-002 - Failed");
+            else
+            {
+                logger.LogInformation("Test-002 - Succeeded");
+            }
+
+            // Test-003 - Send Command to Device
+            // TBD - Need to obtain the token from authorization service
+            logger.LogInformation("Running Test-003 - Modify device config");
+            data = new
+            {
+                binaryData = "QUJD",
+                versionToUpdate = "19"
+            };
+            var result003 = await mClient.ModifyCloudToDeviceConfig(4, "https://iot-sandbox.clearblade.com",
+                                                        "f6e1d8b30cb0cd8fe8cf95d0dfd001",
+                                                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmZWUxZDhiMzBjODY5MmRiOTZjMGNiODllYzNmIiwic2lkIjoiNjg2MDExZGYtM2VhZS00NjYxLWFlNDYtMGUzNDk4NTBjYzdiIiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjQ4MTcyNzl9.PuzZnogOYym0U7k130oTVqnNwt7RvVGq6G8JZ0SRrss",
+                                                        "PD-103-Device", data);
+            if (!result003)
+                logger.LogInformation("Test-003 - Failed");
+            else
+            {
+                logger.LogInformation("Test-003 - Succeeded");
+            }
+
+
+            //Console.ReadLine();
         }
     }
 
