@@ -94,7 +94,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="system_key"></param>
         /// <param name="deviceIn"></param>
         /// <returns>Device Model</returns>
-        public async Task<(bool, DeviceModel?)> CreateDevice(int version, string system_key, DeviceCreateModel deviceIn)
+        public async Task<(bool, DeviceCreateResultModel?)> CreateDevice(int version, string system_key, DeviceCreateModel deviceIn)
         {
             _logger.LogInformation("Creating new device with id {id}.", deviceIn.id);
             if (_api == null)

@@ -81,7 +81,7 @@ namespace ClearBlade.API.dotnet.client.core
         /// <param name="deviceIdIn"></param>
         /// <param name="deviceNameIn"></param>
         /// <returns>Success / Failure + Device Model</returns>
-        public async Task<(bool, DeviceModel?)> CreateDevice(int version, string baseUrl, string system_key, string accessToken, string deviceIdIn, string deviceNameIn)
+        public async Task<(bool, DeviceCreateResultModel?)> CreateDevice(int version, string baseUrl, string system_key, string accessToken, string deviceIdIn, string deviceNameIn)
         {
             // Initialize the service
             _deviceSvc.Initialize(new HttpLoggingHandler(accessToken), baseUrl);

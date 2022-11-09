@@ -49,13 +49,13 @@ namespace ClearBlade.API.dotnet.client.core.Models
         public string name { get; set; }
         public string numId { get; set; }
         public List<Credential> credentials { get; set; }
-        public DateTime lastHeartbeatTime { get; set; }
-        public DateTime lastEventTime { get; set; }
+        public string lastHeartbeatTime { get; set; }
+        public string lastEventTime { get; set; }
         public string lastStateTime { get; set; }
-        public DateTime lastConfigAckTime { get; set; }
-        public DateTime lastConfigSendTime { get; set; }
+        public string lastConfigAckTime { get; set; }
+        public string lastConfigSendTime { get; set; }
         public bool blocked { get; set; }
-        public DateTime lastErrorTime { get; set; }
+        public string lastErrorTime { get; set; }
         public LastErrorStatus lastErrorStatus { get; set; }
         public Config config { get; set; }
         public State state { get; set; }
@@ -69,7 +69,12 @@ namespace ClearBlade.API.dotnet.client.core.Models
             name = string.Empty;
             numId = string.Empty;
             credentials = new List<Credential>();
+            lastHeartbeatTime = string.Empty;
+            lastEventTime = string.Empty;
             lastStateTime = string.Empty;
+            lastConfigAckTime = string.Empty;
+            lastConfigSendTime = string.Empty;
+            lastErrorTime = string.Empty;
             lastErrorStatus = new LastErrorStatus();
             config = new Config();
             state = new State();
