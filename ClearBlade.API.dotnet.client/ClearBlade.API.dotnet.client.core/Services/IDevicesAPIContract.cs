@@ -31,5 +31,26 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns>Success / Failure</returns>
         [Post("/api/v/{version}/webhook/execute/{system_key}/cloudiot_devices")]
         Task<IApiResponse<bool>> PostToDevice(int version, string system_key, [AliasAs("name")] string deviceName, [AliasAs("method")] string methodName, [Body] object body);
+
+        /// <summary>
+        /// Api to create new device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="deviceIn"></param>
+        /// <returns>Device Model</returns>
+        [Post("/api/v/{version}/webhook/execute/{system_key}/cloudiot_devices")]
+        Task<IApiResponse<DeviceModel>> CreateDevice(int version, string system_key, [Body] DeviceCreateModel deviceIn);
+
+        /// <summary>
+        /// Api to delete a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="deviceIn"></param>
+        /// <returns>Error number</returns>
+        [Delete("/api/v/{version}/webhook/execute/{system_key}/cloudiot_devices")]
+        Task<IApiResponse<int>> DeleteDevice(int version, string system_key, [AliasAs("name")] string deviceName, [Body] DeviceCreateModel deviceIn);
     }
 }

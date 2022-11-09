@@ -73,7 +73,7 @@ namespace ClearBlade.API.dotnet.client.core.Models
             lastErrorStatus = new LastErrorStatus();
             config = new Config();
             state = new State();
-            logLevel = string.Empty;
+            logLevel = "NONE";
             metadata = new Metadata();
             gatewayConfig = new GatewayConfig();
         }

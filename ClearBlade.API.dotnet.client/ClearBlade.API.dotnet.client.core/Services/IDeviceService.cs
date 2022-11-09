@@ -16,7 +16,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// </summary>
         /// <param name="handler"></param>
         /// <param name="baseUrl"></param>
-        void Initialize(AuthHeaderHandler handler, string baseUrl);
+        void Initialize(HttpLoggingHandler handler, string baseUrl);
         /// <summary>
         /// Method to get list of devices.
         /// </summary>
@@ -35,5 +35,22 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="body"></param>
         /// <returns>Success / Failure</returns>
         Task<bool> PostToDevice(int version, string system_key, string deviceName, string methodName, object body);
+        /// <summary>
+        /// Api to create new device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="deviceIn"></param>
+        /// <returns>Device Model</returns>
+        Task<(bool, DeviceModel?)> CreateDevice(int version, string system_key, DeviceCreateModel deviceIn);
+        /// <summary>
+        /// Api to delete a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="deviceIn"></param>
+        /// <returns>Error number</returns>
+        Task<(bool, int?)> DeleteDevice(int version, string system_key, DeviceCreateModel deviceIn);
     }
 }

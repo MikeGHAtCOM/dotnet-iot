@@ -31,7 +31,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// </summary>
         /// <param name="handler"></param>
         /// <param name="baseUrl"></param>
-        public void Initialize(AuthHeaderHandler handler, string baseUrl)
+        public void Initialize(HttpLoggingHandler handler, string baseUrl)
         {
             _api = RestService.For<IDevicesAPIContract>(new HttpClient(handler)
             {
@@ -58,7 +58,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 return (true, response.Content.devices);
             }
 
-            _logger.LogError(response.Error, "Reason: {ReasonPhrase}", response.ReasonPhrase);
+            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
             return (false, new List<DeviceModel>());
         }
 
@@ -83,8 +83,54 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 return true;
             }
 
-            _logger.LogError(response.Error, "Reason: {ReasonPhrase}", response.ReasonPhrase);
+            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
             return false;
+        }
+
+        /// <summary>
+        /// Api to create new device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="deviceIn"></param>
+        /// <returns>Device Model</returns>
+        public async Task<(bool, DeviceModel?)> CreateDevice(int version, string system_key, DeviceCreateModel deviceIn)
+        {
+            _logger.LogInformation("Creating new device with id {id}.", deviceIn.id);
+            if (_api == null)
+                return (false, null);
+            var response = await _api.CreateDevice(version, system_key, deviceIn);
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Successfully created the device");
+                return (true, response.Content);
+            }
+
+            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+            return (false, null);
+        }
+
+        /// <summary>
+        /// Api to delete a Device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="deviceIn"></param>
+        /// <returns></returns>
+        public async Task<(bool, int?)> DeleteDevice(int version, string system_key, DeviceCreateModel deviceIn)
+        {
+            _logger.LogInformation("Deleting device with id {id}.", deviceIn.id);
+            if (_api == null)
+                return (false, null);
+            var response = await _api.DeleteDevice(version, system_key, deviceIn.name, deviceIn);
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Successfully deleted the device");
+                return (true, response.Content);
+            }
+
+            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+            return (false, null);
         }
     }
 }

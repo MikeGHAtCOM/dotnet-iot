@@ -28,7 +28,7 @@ namespace ClearBlade.API.dotnet.client.core
         public async Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(int version, string baseUrl, string system_key, string accessToken, string parentPath)
         {
             // Initialize the service
-            _deviceSvc.Initialize(new AuthHeaderHandler(accessToken), baseUrl);
+            _deviceSvc.Initialize(new HttpLoggingHandler(accessToken), baseUrl);
 
             // call method GetDevicesList
             var res =  await _deviceSvc.GetDevicesList(version, system_key, parentPath);
@@ -48,7 +48,7 @@ namespace ClearBlade.API.dotnet.client.core
         public async Task<bool> SendCommandToDevice(int version, string baseUrl, string system_key, string accessToken, string deviceName, object body)
         {
             // Initialize the service
-            _deviceSvc.Initialize(new AuthHeaderHandler(accessToken), baseUrl);
+            _deviceSvc.Initialize(new HttpLoggingHandler(accessToken), baseUrl);
 
             return await _deviceSvc.PostToDevice(version, system_key, deviceName, "sendCommandToDevice", body);
         }
@@ -66,9 +66,53 @@ namespace ClearBlade.API.dotnet.client.core
         public async Task<bool> ModifyCloudToDeviceConfig(int version, string baseUrl, string system_key, string accessToken, string deviceName, object body)
         {
             // Initialize the service
-            _deviceSvc.Initialize(new AuthHeaderHandler(accessToken), baseUrl);
+            _deviceSvc.Initialize(new HttpLoggingHandler(accessToken), baseUrl);
 
             return await _deviceSvc.PostToDevice(version, system_key, deviceName, "modifyCloudToDeviceConfig", body);
+        }
+
+        /// <summary>
+        /// Helper class method to Create a new device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="baseUrl"></param>
+        /// <param name="system_key"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="deviceIdIn"></param>
+        /// <param name="deviceNameIn"></param>
+        /// <returns>Success / Failure + Device Model</returns>
+        public async Task<(bool, DeviceModel?)> CreateDevice(int version, string baseUrl, string system_key, string accessToken, string deviceIdIn, string deviceNameIn)
+        {
+            // Initialize the service
+            _deviceSvc.Initialize(new HttpLoggingHandler(accessToken), baseUrl);
+
+            DeviceCreateModel model = new DeviceCreateModel();
+            model.id = deviceIdIn;
+            model.name = deviceNameIn;
+
+            return await _deviceSvc.CreateDevice(version, system_key, model);
+        }
+
+        /// <summary>
+        /// Helper class method to Delete a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="baseUrl"></param>
+        /// <param name="system_key"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="deviceIdIn"></param>
+        /// <param name="deviceNameIn"></param>
+        /// <returns>Success / Failure + Device Model</returns>
+        public async Task<(bool, int?)> DeleteDevice(int version, string baseUrl, string system_key, string accessToken, string deviceIdIn, string deviceNameIn)
+        {
+            // Initialize the service
+            _deviceSvc.Initialize(new HttpLoggingHandler(accessToken), baseUrl);
+
+            DeviceCreateModel model = new DeviceCreateModel();
+            model.id = deviceIdIn;
+            model.name = deviceNameIn;
+
+            return await _deviceSvc.DeleteDevice(version, system_key, model);
         }
     }
 }
