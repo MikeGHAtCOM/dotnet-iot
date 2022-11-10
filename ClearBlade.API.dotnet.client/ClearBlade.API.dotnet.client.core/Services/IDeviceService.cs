@@ -52,5 +52,14 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="deviceIn"></param>
         /// <returns>Error number</returns>
         Task<(bool, int?)> DeleteDevice(int version, string system_key, DeviceCreateModel deviceIn);
+        /// <summary>
+        /// Api to obtain details of a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="deviceName"></param>
+        /// <returns>success / failure - Device Model</returns>
+        Task<(bool, DeviceModel?)> GetDevice(int version, string system_key, string deviceName);
+
     }
 }

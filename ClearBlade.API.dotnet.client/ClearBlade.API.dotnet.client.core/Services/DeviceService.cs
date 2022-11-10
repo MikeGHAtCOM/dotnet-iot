@@ -132,5 +132,29 @@ namespace ClearBlade.API.dotnet.client.core.Services
             _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
             return (false, null);
         }
+
+        /// <summary>
+        /// Api to obtain details of a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="deviceName"></param>
+        /// <returns>success / failure - Device Model</returns>
+        public async Task<(bool, DeviceModel?)> GetDevice(int version, string system_key, string deviceName)
+        {
+            _logger.LogInformation("Get details of a device with name {name}.", deviceName);
+            if (_api == null)
+                return (false, null);
+            var response = await _api.GetDevice(version, system_key, deviceName);
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Successfully obtained the device details");
+                return (true, response.Content);
+            }
+
+            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+            return (false, null);
+        }
+
     }
 }

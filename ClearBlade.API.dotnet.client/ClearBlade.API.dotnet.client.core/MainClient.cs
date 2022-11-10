@@ -114,5 +114,23 @@ namespace ClearBlade.API.dotnet.client.core
 
             return await _deviceSvc.DeleteDevice(version, system_key, model);
         }
+
+        /// <summary>
+        /// Helper class method to get details of a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="baseUrl"></param>
+        /// <param name="system_key"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="deviceNameIn"></param>
+        /// <returns>success / failure - Device Model</returns>
+        public async Task<(bool, DeviceModel?)> GetDevice(int version, string baseUrl, string system_key, string accessToken, string deviceNameIn)
+        {
+            // Initialize the service
+            _deviceSvc.Initialize(new HttpLoggingHandler(accessToken), baseUrl);
+
+            return await _deviceSvc.GetDevice(version, system_key, deviceNameIn);
+        }
+
     }
 }

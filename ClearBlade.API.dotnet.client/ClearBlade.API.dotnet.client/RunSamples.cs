@@ -21,16 +21,18 @@ namespace ClearBlade.API.dotnet.client
         static bool bModifyCloudToDeviceConfig = false;
         static bool bCreateDevice = false;
         static bool bDeleteDevice = false;
+        static bool bGetDevice = false;
         #endregion
 
         public static bool Execute(ServiceProvider serviceProvider, ILogger logger)
         {
             // Set which sample to run
-            bGetDevicesList = true;
-            bSendCommandToDevice = true;
-            bModifyCloudToDeviceConfig = true;
-            bCreateDevice = true;
-            bDeleteDevice = true;
+            //bGetDevicesList = true;
+            //bSendCommandToDevice = true;
+            //bModifyCloudToDeviceConfig = true;
+            //bCreateDevice = true;
+            //bDeleteDevice = true;
+            bGetDevice = true;
 
 
             logger.LogInformation("Running selected DotNet SDK samples");
@@ -166,6 +168,27 @@ namespace ClearBlade.API.dotnet.client
                         logger.LogInformation("Successfully deleted the device");
                     }
                 }
+
+                // Sample - Get a device
+                if (bGetDevice)
+                {
+                    // TBD - Need to obtain the token from authorization service
+                    logger.LogInformation("Get a device");
+
+                    string name = "Sample-New-Device";
+
+                    var result = await mClient.GetDevice(4, "https://iot-sandbox.clearblade.com",
+                                                                "f6e1d8b30cb0cd8fe8cf95d0dfd001",
+                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmZWUxZDhiMzBjODY5MmRiOTZjMGNiODllYzNmIiwic2lkIjoiNjg2MDExZGYtM2VhZS00NjYxLWFlNDYtMGUzNDk4NTBjYzdiIiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjQ4MTcyNzl9.PuzZnogOYym0U7k130oTVqnNwt7RvVGq6G8JZ0SRrss",
+                                                                name);
+                    if (!result.Item1 || (result.Item2 == null))
+                        logger.LogInformation("Failed to get a device");
+                    else
+                    {
+                        logger.LogInformation("Successfully obtained the device");
+                    }
+                }
+
 
                 //Console.ReadLine();
             }
