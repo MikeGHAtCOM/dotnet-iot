@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClearBlade.API.dotnet.client.core.Models
 {
-    public class DeviceCreateResultModel
+    public class DeviceCreateResponseModel
     {
         public string id { get; set; }
         public string name { get; set; }
@@ -26,7 +26,7 @@ namespace ClearBlade.API.dotnet.client.core.Models
         public Metadata metadata { get; set; }
         public GatewayConfig gatewayConfig { get; set; }
 
-        public DeviceCreateResultModel()
+        public DeviceCreateResponseModel()
         {
             id = String.Empty;
             name = String.Empty;

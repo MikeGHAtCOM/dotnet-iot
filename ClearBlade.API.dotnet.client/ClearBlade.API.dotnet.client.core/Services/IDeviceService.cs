@@ -42,7 +42,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="system_key"></param>
         /// <param name="deviceIn"></param>
         /// <returns>Device Model</returns>
-        Task<(bool, DeviceCreateResultModel?)> CreateDevice(int version, string system_key, DeviceCreateModel deviceIn);
+        Task<(bool, DeviceCreateResponseModel?)> CreateDevice(int version, string system_key, DeviceCreateModel deviceIn);
         /// <summary>
         /// Api to delete a device
         /// </summary>
@@ -61,5 +61,14 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns>success / failure - Device Model</returns>
         Task<(bool, DeviceModel?)> GetDevice(int version, string system_key, string deviceName);
 
+        /// <summary>
+        /// Api to obtain configuration details of a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="localVersion"></param>
+        /// <returns>success / failure - Device config Model</returns>
+        Task<(bool, DeviceConfigResponseModel?)> GetDeviceConfig(int version, string system_key, string deviceName, string localVersion);
     }
 }

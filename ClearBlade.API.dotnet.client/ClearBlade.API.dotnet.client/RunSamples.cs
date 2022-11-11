@@ -22,6 +22,7 @@ namespace ClearBlade.API.dotnet.client
         static bool bCreateDevice = false;
         static bool bDeleteDevice = false;
         static bool bGetDevice = false;
+        static bool bGetDeviceConfig = false;
         #endregion
 
         public static bool Execute(ServiceProvider serviceProvider, ILogger logger)
@@ -32,7 +33,7 @@ namespace ClearBlade.API.dotnet.client
             //bModifyCloudToDeviceConfig = true;
             //bCreateDevice = true;
             //bDeleteDevice = true;
-            bGetDevice = true;
+            bGetDeviceConfig = true;
 
 
             logger.LogInformation("Running selected DotNet SDK samples");
@@ -64,8 +65,8 @@ namespace ClearBlade.API.dotnet.client
                     // TBD - Need to obtain the token from authorization service
                     logger.LogInformation("Obtain list of devices for a particular registry");
                     var result = await mClient.GetDevicesList(4, "https://iot-sandbox.clearblade.com",
-                                                                "f6e1d8b30cb0cd8fe8cf95d0dfd001",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmZWUxZDhiMzBjODY5MmRiOTZjMGNiODllYzNmIiwic2lkIjoiNjg2MDExZGYtM2VhZS00NjYxLWFlNDYtMGUzNDk4NTBjYzdiIiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjQ4MTcyNzl9.PuzZnogOYym0U7k130oTVqnNwt7RvVGq6G8JZ0SRrss",
+                                                                "92e9f2b60cd482c3b6e19984e48401",
+                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
                                                                 "projects/ingressdevelopmentenv/locations/us-central1/registries/PD-103-Registry");
                     if (!result.Item1)
                         logger.LogInformation("Failed to get list of devices");
@@ -91,8 +92,8 @@ namespace ClearBlade.API.dotnet.client
                     };
 
                     var result = await mClient.SendCommandToDevice(4, "https://iot-sandbox.clearblade.com",
-                                                                "f6e1d8b30cb0cd8fe8cf95d0dfd001",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmZWUxZDhiMzBjODY5MmRiOTZjMGNiODllYzNmIiwic2lkIjoiNjg2MDExZGYtM2VhZS00NjYxLWFlNDYtMGUzNDk4NTBjYzdiIiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjQ4MTcyNzl9.PuzZnogOYym0U7k130oTVqnNwt7RvVGq6G8JZ0SRrss",
+                                                                "92e9f2b60cd482c3b6e19984e48401",
+                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
                                                                 "PD-103-Device", data);
                     if (!result)
                         logger.LogInformation("Failed to send command to device");
@@ -113,8 +114,8 @@ namespace ClearBlade.API.dotnet.client
                         versionToUpdate = "19"
                     };
                     var result = await mClient.ModifyCloudToDeviceConfig(4, "https://iot-sandbox.clearblade.com",
-                                                                "f6e1d8b30cb0cd8fe8cf95d0dfd001",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmZWUxZDhiMzBjODY5MmRiOTZjMGNiODllYzNmIiwic2lkIjoiNjg2MDExZGYtM2VhZS00NjYxLWFlNDYtMGUzNDk4NTBjYzdiIiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjQ4MTcyNzl9.PuzZnogOYym0U7k130oTVqnNwt7RvVGq6G8JZ0SRrss",
+                                                                "92e9f2b60cd482c3b6e19984e48401",
+                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
                                                                 "PD-103-Device", data);
                     if (!result)
                         logger.LogInformation("Failed to modify the device config data");
@@ -135,8 +136,8 @@ namespace ClearBlade.API.dotnet.client
                     string name = "Sample-New-Device";
 
                     var result = await mClient.CreateDevice(4, "https://iot-sandbox.clearblade.com",
-                                                                "f6e1d8b30cb0cd8fe8cf95d0dfd001",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmZWUxZDhiMzBjODY5MmRiOTZjMGNiODllYzNmIiwic2lkIjoiNjg2MDExZGYtM2VhZS00NjYxLWFlNDYtMGUzNDk4NTBjYzdiIiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjQ4MTcyNzl9.PuzZnogOYym0U7k130oTVqnNwt7RvVGq6G8JZ0SRrss",
+                                                                "92e9f2b60cd482c3b6e19984e48401",
+                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
                                                                 id, name);
                     if (!result.Item1 || (result.Item2 == null))
                         logger.LogInformation("Failed to create new device");
@@ -158,8 +159,8 @@ namespace ClearBlade.API.dotnet.client
                     string name = "Sample-New-Device";
 
                     var result = await mClient.DeleteDevice(4, "https://iot-sandbox.clearblade.com",
-                                                                "f6e1d8b30cb0cd8fe8cf95d0dfd001",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmZWUxZDhiMzBjODY5MmRiOTZjMGNiODllYzNmIiwic2lkIjoiNjg2MDExZGYtM2VhZS00NjYxLWFlNDYtMGUzNDk4NTBjYzdiIiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjQ4MTcyNzl9.PuzZnogOYym0U7k130oTVqnNwt7RvVGq6G8JZ0SRrss",
+                                                                "92e9f2b60cd482c3b6e19984e48401",
+                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
                                                                 id, name);
                     if (!result.Item1 || (result.Item2 == null))
                         logger.LogInformation("Failed to delete device");
@@ -178,8 +179,8 @@ namespace ClearBlade.API.dotnet.client
                     string name = "Sample-New-Device";
 
                     var result = await mClient.GetDevice(4, "https://iot-sandbox.clearblade.com",
-                                                                "f6e1d8b30cb0cd8fe8cf95d0dfd001",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmZWUxZDhiMzBjODY5MmRiOTZjMGNiODllYzNmIiwic2lkIjoiNjg2MDExZGYtM2VhZS00NjYxLWFlNDYtMGUzNDk4NTBjYzdiIiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjQ4MTcyNzl9.PuzZnogOYym0U7k130oTVqnNwt7RvVGq6G8JZ0SRrss",
+                                                                "92e9f2b60cd482c3b6e19984e48401",
+                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
                                                                 name);
                     if (!result.Item1 || (result.Item2 == null))
                         logger.LogInformation("Failed to get a device");
@@ -189,6 +190,31 @@ namespace ClearBlade.API.dotnet.client
                     }
                 }
 
+                // Sample - Get configuration of a device
+                if (bGetDeviceConfig)
+                {
+                    // TBD - Need to obtain the token from authorization service
+                    logger.LogInformation("Get configuration of a device");
+
+                    // While running this sample, it is assumed that, device with name
+                    // "Sample-New-Device" exists and version is updated to "2"
+
+                    string name = "Sample-New-Device";
+                    string localVersion = "2";
+
+                    var result = await mClient.GetDeviceConfig(4, "https://iot-sandbox.clearblade.com",
+                                                                "92e9f2b60cd482c3b6e19984e48401",
+                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
+                                                                name, localVersion);
+                    if (!result.Item1 || (result.Item2 == null))
+                        logger.LogInformation("Failed to get a device configuration");
+                    else
+                    {
+                        logger.LogInformation("Successfully obtained the device configuration");
+
+                        // Use the obtained information
+                    }
+                }
 
                 //Console.ReadLine();
             }

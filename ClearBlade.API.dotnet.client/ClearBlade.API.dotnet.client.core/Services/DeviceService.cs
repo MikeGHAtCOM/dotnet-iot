@@ -94,7 +94,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="system_key"></param>
         /// <param name="deviceIn"></param>
         /// <returns>Device Model</returns>
-        public async Task<(bool, DeviceCreateResultModel?)> CreateDevice(int version, string system_key, DeviceCreateModel deviceIn)
+        public async Task<(bool, DeviceCreateResponseModel?)> CreateDevice(int version, string system_key, DeviceCreateModel deviceIn)
         {
             _logger.LogInformation("Creating new device with id {id}.", deviceIn.id);
             if (_api == null)
@@ -156,5 +156,28 @@ namespace ClearBlade.API.dotnet.client.core.Services
             return (false, null);
         }
 
+        /// <summary>
+        /// Api to obtain configuration details of a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="localVersion"></param>
+        /// <returns>success / failure - Device config Model</returns>
+        public async Task<(bool, DeviceConfigResponseModel?)> GetDeviceConfig(int version, string system_key, string deviceName, string localVersion)
+        {
+            _logger.LogInformation("Get configuration details of a device with name {name}.", deviceName);
+            if (_api == null)
+                return (false, null);
+            var response = await _api.GetDeviceConfig(version, system_key, deviceName, localVersion);
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Successfully obtained the device configuration details");
+                return (true, response.Content);
+            }
+
+            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+            return (false, null);
+        }
     }
 }
