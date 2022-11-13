@@ -74,5 +74,17 @@ namespace ClearBlade.API.dotnet.client.core.Services
         [Get("/api/v/{version}/webhook/execute/{system_key}/cloudiotdevice_devices")]
         Task<IApiResponse<DeviceConfigResponseModel>> GetDeviceConfig(int version, string system_key, [AliasAs("name")] string deviceName, [AliasAs("localVersion")] string localVersion);
 
+        /// <summary>
+        /// Api to bind or unbind Device to/fro gateway
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="parent"></param>
+        /// <param name="methodName"></param>
+        /// <param name="body"></param>
+        /// <returns>Success/Failure</returns>
+        [Post("/api/v/{version}/webhook/execute/{system_key}/cloudiot")]
+        Task<IApiResponse<bool>> DeviceToGateway(int version, string system_key, [AliasAs("parent")] string parent, [AliasAs("method")] string methodName, [Body] object body);
     }
 }

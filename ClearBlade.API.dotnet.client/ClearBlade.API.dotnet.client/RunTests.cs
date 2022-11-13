@@ -24,11 +24,14 @@ namespace ClearBlade.API.dotnet.client
         static bool bTest005 = false;
         static bool bTest006 = false;
         static bool bTest007 = false;
+        static bool bTest008 = false;
+        static bool bTest009 = false;
         #endregion
 
         public static bool Execute(ServiceProvider serviceProvider, ILogger logger)
         {
             // Set which tests to run
+            //bTest008 = true;
             //bTest007 = true;
             // bTest004 = true;
             // bTest005 = true;
@@ -346,6 +349,48 @@ namespace ClearBlade.API.dotnet.client
                                             "92e9f2b60cd482c3b6e19984e48401",
                                             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
                                             "Test-007-Device", "Test-007-Device");
+                    }
+                }
+
+                // Test-008 - Get Device configuration details
+                if (bTest008 || bAllTests)
+                {
+                    // TBD - Need to obtain the token from authorization service
+                    logger.LogInformation("Running Test-008 - Get Device");
+
+                    // First create a device to get its configuration details
+                    var resultPre = await mClient.CreateDevice(4, "https://iot-sandbox.clearblade.com",
+                        "92e9f2b60cd482c3b6e19984e48401",
+                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
+                        "Test-008-Device", "Test-008-Device");
+                    if (!resultPre.Item1 || (resultPre.Item2 == null))
+                        logger.LogInformation("Test-008 - Failed - Failed while creating new device");
+
+                   
+                    // Actual test - Bind Device
+                    var result008 = await mClient.BindDeviceToGateway(4, "https://iot-sandbox.clearblade.com",
+                                                                "92e9f2b60cd482c3b6e19984e48401",
+                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
+                                                                "PD-105-Registry", "TestGateway", "Test-008-Device");
+                    if (!result008)
+                        logger.LogInformation("Test-008 - Failed");
+                    else
+                    {
+                        // Actual test - UnBind Device
+                        result008 = await mClient.UnBindDeviceFromGateway(4, "https://iot-sandbox.clearblade.com",
+                                                                    "92e9f2b60cd482c3b6e19984e48401",
+                                                                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
+                                                                    "PD-105-Registry", "TestGateway", "Test-008-Device");
+                        if (!result008)
+                            logger.LogInformation("Test-008 - Failed");
+                        else
+                            logger.LogInformation("Test-008 - Succeeded");
+
+                        // Delete the newly created device - cleanup
+                        await mClient.DeleteDevice(4, "https://iot-sandbox.clearblade.com",
+                                            "92e9f2b60cd482c3b6e19984e48401",
+                                            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
+                                            "Test-008-Device", "Test-008-Device");
                     }
                 }
 

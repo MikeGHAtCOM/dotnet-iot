@@ -132,7 +132,16 @@ namespace ClearBlade.API.dotnet.client.core
             return await _deviceSvc.GetDevice(version, system_key, deviceNameIn);
         }
 
-
+        /// <summary>
+        /// Helper class method to get configuration of a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="baseUrl"></param>
+        /// <param name="system_key"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="deviceNameIn"></param>
+        /// <param name="localVersionIn"></param>
+        /// <returns>Success / Failure and device configuration</returns>
         public async Task<(bool, DeviceConfigResponseModel?)> GetDeviceConfig(int version, string baseUrl, string system_key, string accessToken, string deviceNameIn, string localVersionIn)
         {
             // Initialize the service
@@ -141,5 +150,42 @@ namespace ClearBlade.API.dotnet.client.core
             return await _deviceSvc.GetDeviceConfig(version, system_key, deviceNameIn, localVersionIn);
         }
 
+        /// <summary>
+        /// Helper class method to bind a device to Gateway
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="baseUrl"></param>
+        /// <param name="system_key"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="parent"></param>
+        /// <param name="gatewayId"></param>
+        /// <param name="deviceId"></param>
+        /// <returns>Success / Failure</returns>
+        public async Task<bool> BindDeviceToGateway(int version, string baseUrl, string system_key, string accessToken, string parent, string gatewayId, string deviceId)
+        {
+            // Initialize the service
+            _deviceSvc.Initialize(new HttpLoggingHandler(accessToken), baseUrl);
+
+            return await _deviceSvc.DeviceToGateway(version, system_key, parent, "bindDeviceToGateway", new DeviceToGatewayModel(gatewayId, deviceId));
+        }
+
+        /// <summary>
+        /// Helper class method to unbind a device from Gateway
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="baseUrl"></param>
+        /// <param name="system_key"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="parent"></param>
+        /// <param name="gatewayId"></param>
+        /// <param name="deviceId"></param>
+        /// <returns>Success / Failure</returns>
+        public async Task<bool> UnBindDeviceFromGateway(int version, string baseUrl, string system_key, string accessToken, string parent, string gatewayId, string deviceId)
+        {
+            // Initialize the service
+            _deviceSvc.Initialize(new HttpLoggingHandler(accessToken), baseUrl);
+
+            return await _deviceSvc.DeviceToGateway(version, system_key, parent, "unbindDeviceFromGateway", new DeviceToGatewayModel(gatewayId, deviceId));
+        }
     }
 }

@@ -179,5 +179,21 @@ namespace ClearBlade.API.dotnet.client.core.Services
             _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
             return (false, null);
         }
+
+        public async Task<bool> DeviceToGateway(int version, string system_key, string parent, string methodName, DeviceToGatewayModel body)
+        {
+            _logger.LogInformation("{methodName} - device with id {id} to / fro Gateway.", methodName, body.deviceId);
+            if (_api == null)
+                return false;
+            var response = await _api.DeviceToGateway(version, system_key, parent, methodName, body);
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Successfully completed method {methodName}", methodName);
+                return true;
+            }
+
+            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+            return false;
+        }
     }
 }

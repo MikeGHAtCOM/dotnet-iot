@@ -70,5 +70,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="localVersion"></param>
         /// <returns>success / failure - Device config Model</returns>
         Task<(bool, DeviceConfigResponseModel?)> GetDeviceConfig(int version, string system_key, string deviceName, string localVersion);
+
+        Task<bool> DeviceToGateway(int version, string system_key, string parent, string methodName, DeviceToGatewayModel body);
     }
 }

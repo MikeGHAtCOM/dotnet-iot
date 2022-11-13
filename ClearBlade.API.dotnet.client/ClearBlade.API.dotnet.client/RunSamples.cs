@@ -23,6 +23,7 @@ namespace ClearBlade.API.dotnet.client
         static bool bDeleteDevice = false;
         static bool bGetDevice = false;
         static bool bGetDeviceConfig = false;
+        static bool bBindUnBindDevice = false;
         #endregion
 
         public static bool Execute(ServiceProvider serviceProvider, ILogger logger)
@@ -33,7 +34,8 @@ namespace ClearBlade.API.dotnet.client
             //bModifyCloudToDeviceConfig = true;
             //bCreateDevice = true;
             //bDeleteDevice = true;
-            bGetDeviceConfig = true;
+            //bGetDeviceConfig = true;
+            bBindUnBindDevice = true;
 
 
             logger.LogInformation("Running selected DotNet SDK samples");
@@ -216,6 +218,39 @@ namespace ClearBlade.API.dotnet.client
                     }
                 }
 
+                // Sample - Bind / Unbind a device
+                if (bBindUnBindDevice)
+                {
+                    // TBD - Need to obtain the token from authorization service
+                    logger.LogInformation("Get configuration of a device");
+
+                    // While running this sample, it is assumed that, device with name
+                    // "Sample-New-Device" exists and Gateway with name "TestGateway" exists
+                    // "Sample-New-Registry" is the registry name
+
+                    // Sample - Bind Device
+                    var result = await mClient.BindDeviceToGateway(4, "https://iot-sandbox.clearblade.com",
+                                                                "c2d187b70cacfa9cc8bfe5d8e0e601",
+                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJjYWQxODdiNzBjZDg5ZDgxZDZlMmMyZTllNzllMDEiLCJzaWQiOiIyNWQyOTQ4Mi0wZWQ0LTQzZGQtODQ1NS1mZmYzOTYxOTg1ODciLCJ1dCI6MiwidHQiOjEsImV4cCI6LTEsImlhdCI6MTY2ODM0Njk4MX0.gN7DR4ri-shVaY_wKvYQUC-R6NIP1oy_CC0a88vjBDU",
+                                                                "Sample-New-Registry", "TestGateway", "Sample-New-Device");
+                    if (!result)
+                    {
+                        logger.LogInformation("Failed To Bind Device");
+                    }
+                    else
+                    {
+                        // Actual test - UnBind Device
+                        result = await mClient.UnBindDeviceFromGateway(4, "https://iot-sandbox.clearblade.com",
+                                                                    "c2d187b70cacfa9cc8bfe5d8e0e601",
+                                                                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJjYWQxODdiNzBjZDg5ZDgxZDZlMmMyZTllNzllMDEiLCJzaWQiOiIyNWQyOTQ4Mi0wZWQ0LTQzZGQtODQ1NS1mZmYzOTYxOTg1ODciLCJ1dCI6MiwidHQiOjEsImV4cCI6LTEsImlhdCI6MTY2ODM0Njk4MX0.gN7DR4ri-shVaY_wKvYQUC-R6NIP1oy_CC0a88vjBDU",
+                                                                    "Sample-New-Registry", "TestGateway", "Sample-New-Device");
+                        if (!result)
+                            logger.LogInformation("Failed to unbind a device");
+                        else
+                            logger.LogInformation("Successfully bind device");
+
+                    }
+                }
                 //Console.ReadLine();
             }
         }
