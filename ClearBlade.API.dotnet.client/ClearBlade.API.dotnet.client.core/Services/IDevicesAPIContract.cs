@@ -86,5 +86,15 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns>Success/Failure</returns>
         [Post("/api/v/{version}/webhook/execute/{system_key}/cloudiot")]
         Task<IApiResponse<bool>> DeviceToGateway(int version, string system_key, [AliasAs("parent")] string parent, [AliasAs("method")] string methodName, [Body] object body);
+
+        /// <summary>
+        /// Api to get registry configuration
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="name"></param>
+        /// <returns>RegistryConfigModel</returns>
+        [Get("/api/v/{version}/webhook/execute/{system_key}/cloudiot")]
+        Task<IApiResponse<RegistryConfigModel>> GetRegistryConfig(int version, string system_key, [AliasAs("name")] string name);
     }
 }

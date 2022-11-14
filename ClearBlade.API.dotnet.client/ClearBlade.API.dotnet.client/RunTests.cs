@@ -31,6 +31,7 @@ namespace ClearBlade.API.dotnet.client
         public static bool Execute(ServiceProvider serviceProvider, ILogger logger)
         {
             // Set which tests to run
+            bTest009 = true;
             //bTest008 = true;
             //bTest007 = true;
             // bTest004 = true;
@@ -394,6 +395,32 @@ namespace ClearBlade.API.dotnet.client
                     }
                 }
 
+                // Test-009 - Get Registry configuration details
+                if (bTest009 || bAllTests)
+                {
+                    // TBD - Need to obtain the token from authorization service
+                    logger.LogInformation("Running Test-009 - Get Registry configuration");
+
+                    // Next set some configuration information
+                    data = new
+                    {
+                        binaryData = "QUJD",
+                        versionToUpdate = "1"
+                    };
+                    var result009 = await mClient.GetRegistryConfig(4, "https://iot-sandbox.clearblade.com",
+                                                                "92e9f2b60cd482c3b6e19984e48401",
+                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
+                                                                "PD-105-Registry");
+                    if (!result009.Item1 || (result009.Item2 == null))
+                        logger.LogInformation("Test-009 - Failed");
+                    else
+                    {
+                        if (string.Compare(result009.Item2.id, "PD-105-Registry", true) == 0)
+                            logger.LogInformation("Test-009 - Succeeded");
+                        else
+                            logger.LogInformation("Test-009 - Failed");
+                    }
+                }
                 //Console.ReadLine();
             }
         }

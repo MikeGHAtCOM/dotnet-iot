@@ -71,6 +71,24 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns>success / failure - Device config Model</returns>
         Task<(bool, DeviceConfigResponseModel?)> GetDeviceConfig(int version, string system_key, string deviceName, string localVersion);
 
+        /// <summary>
+        /// Api to bind or unbind device to/from a gateway
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="parent"></param>
+        /// <param name="methodName"></param>
+        /// <param name="body"></param>
+        /// <returns>Success / Failure</returns>
         Task<bool> DeviceToGateway(int version, string system_key, string parent, string methodName, DeviceToGatewayModel body);
+
+        /// <summary>
+        /// Api to get configuration of a registry
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="name"></param>
+        /// <returns>Success / Failure and RegistryConfigModel</returns>
+        Task<(bool, RegistryConfigModel)> GetRegistryConfig(int version, string system_key, string name);
     }
 }

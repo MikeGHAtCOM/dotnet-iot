@@ -180,6 +180,15 @@ namespace ClearBlade.API.dotnet.client.core.Services
             return (false, null);
         }
 
+        /// <summary>
+        /// Api to bind or unbind device to/from a gateway
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="parent"></param>
+        /// <param name="methodName"></param>
+        /// <param name="body"></param>
+        /// <returns>Success / Failure</returns>
         public async Task<bool> DeviceToGateway(int version, string system_key, string parent, string methodName, DeviceToGatewayModel body)
         {
             _logger.LogInformation("{methodName} - device with id {id} to / fro Gateway.", methodName, body.deviceId);
@@ -194,6 +203,29 @@ namespace ClearBlade.API.dotnet.client.core.Services
 
             _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
             return false;
+        }
+
+        /// <summary>
+        /// Api to get configuration of a registry
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="name"></param>
+        /// <returns>Success / Failure and RegistryConfigModel</returns>
+        public async Task<(bool, RegistryConfigModel)> GetRegistryConfig(int version, string system_key, string name)
+        {
+            _logger.LogInformation("Get configuration details of a registry with name {name}.", name);
+            if (_api == null)
+                return (false, null);
+            var response = await _api.GetRegistryConfig(version, system_key, name);
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Successfully obtained the registry configuration details");
+                return (true, response.Content);
+            }
+
+            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+            return (false, null);
         }
     }
 }

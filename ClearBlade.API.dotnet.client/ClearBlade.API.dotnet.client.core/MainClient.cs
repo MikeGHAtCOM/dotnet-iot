@@ -187,5 +187,13 @@ namespace ClearBlade.API.dotnet.client.core
 
             return await _deviceSvc.DeviceToGateway(version, system_key, parent, "unbindDeviceFromGateway", new DeviceToGatewayModel(gatewayId, deviceId));
         }
+
+        public async Task<(bool, RegistryConfigModel?)> GetRegistryConfig(int version, string baseUrl, string system_key, string accessToken, string name)
+        {
+            // Initialize the service
+            _deviceSvc.Initialize(new HttpLoggingHandler(accessToken), baseUrl);
+
+            return await _deviceSvc.GetRegistryConfig(version, system_key, name);
+        }
     }
 }

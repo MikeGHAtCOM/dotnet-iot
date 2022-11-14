@@ -24,6 +24,7 @@ namespace ClearBlade.API.dotnet.client
         static bool bGetDevice = false;
         static bool bGetDeviceConfig = false;
         static bool bBindUnBindDevice = false;
+        static bool bGetRegistryConfig= false;
         #endregion
 
         public static bool Execute(ServiceProvider serviceProvider, ILogger logger)
@@ -35,7 +36,8 @@ namespace ClearBlade.API.dotnet.client
             //bCreateDevice = true;
             //bDeleteDevice = true;
             //bGetDeviceConfig = true;
-            bBindUnBindDevice = true;
+            //bBindUnBindDevice = true;
+            bGetRegistryConfig = true;
 
 
             logger.LogInformation("Running selected DotNet SDK samples");
@@ -251,6 +253,32 @@ namespace ClearBlade.API.dotnet.client
 
                     }
                 }
+
+                // Sample - Get configuration of a device
+                if (bGetRegistryConfig)
+                {
+                    // TBD - Need to obtain the token from authorization service
+                    logger.LogInformation("Get configuration of a registry");
+
+                    // While running this sample, it is assumed that, registry with name
+                    // "Sample-New-Registry" exists and version is updated to "2"
+
+                    string name = "Sample-New-Registry";
+
+                    var result = await mClient.GetRegistryConfig(4, "https://iot-sandbox.clearblade.com",
+                                                                "c2d187b70cacfa9cc8bfe5d8e0e601",
+                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJjYWQxODdiNzBjZDg5ZDgxZDZlMmMyZTllNzllMDEiLCJzaWQiOiIyNWQyOTQ4Mi0wZWQ0LTQzZGQtODQ1NS1mZmYzOTYxOTg1ODciLCJ1dCI6MiwidHQiOjEsImV4cCI6LTEsImlhdCI6MTY2ODM0Njk4MX0.gN7DR4ri-shVaY_wKvYQUC-R6NIP1oy_CC0a88vjBDU",
+                                                                name);
+                    if (!result.Item1 || (result.Item2 == null))
+                        logger.LogInformation("Failed to get a device configuration");
+                    else
+                    {
+                        logger.LogInformation("Successfully obtained the device configuration");
+
+                        // Use the obtained information
+                    }
+                }
+
                 //Console.ReadLine();
             }
         }
