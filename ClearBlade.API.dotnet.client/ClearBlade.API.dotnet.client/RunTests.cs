@@ -31,13 +31,14 @@ namespace ClearBlade.API.dotnet.client
         public static bool Execute(ServiceProvider serviceProvider, ILogger logger)
         {
             // Set which tests to run
-            bTest009 = true;
-            //bTest008 = true;
-            //bTest007 = true;
+             //bTest009 = true;
+            // bTest008 = true;
+             //bTest007 = true;
             // bTest004 = true;
             // bTest005 = true;
             // bTest006 = true;
-            // bAllTests = true;
+            // bTest003 = true;
+            bAllTests = true;
 
             logger.LogInformation("Running selected DotNet SDK tests");
 
@@ -62,36 +63,23 @@ namespace ClearBlade.API.dotnet.client
             {
                 MainClient mClient = new MainClient(deviceService);
 
-                var data = new
-                {
-                    binaryData = "QUJD",
-                    versionToUpdate = "1"
-                };
-
                 // Test-001 - Obtain list of devices for a particular registry
                 if (bTest001 || bAllTests)
                 {
-                    // TBD - Need to obtain the token from authorization service
                     logger.LogInformation("Running Test-001 - Obtain list of devices for a particular registry");
 
                     // Create a device to verify if result is correct
-                    var resultPre = await mClient.CreateDevice(4, "https://iot-sandbox.clearblade.com",
-                                            "92e9f2b60cd482c3b6e19984e48401",
-                                            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                            "Test-001-Device", "Test-001-Device");
+                    var resultPre = await mClient.CreateDevice(4, "Test-001-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-001-Device");
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
                     {
-                        logger.LogInformation("Test-001 - Create Device - Failed");
+                        logger.LogError("Test-001 - Create Device - Failed");
                     }
                     else
                     {
 
-                        var result = await mClient.GetDevicesList(4, "https://iot-sandbox.clearblade.com",
-                                                                    "92e9f2b60cd482c3b6e19984e48401",
-                                                                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                                                    "projects/ingressdevelopmentenv/locations/us-central1/registries/PD-103-Registry");
+                        var result = await mClient.GetDevicesList(4, "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry");
                         if (!result.Item1)
-                            logger.LogInformation("Test-001 - Failed");
+                            logger.LogError("Test-001 - Failed");
                         else
                         {
                             bool bSuccess = false;                            
@@ -107,100 +95,86 @@ namespace ClearBlade.API.dotnet.client
                             if (bSuccess)
                                 logger.LogInformation("Test-001 - Succeeded");
                             else
-                                logger.LogInformation("Test-001 - Failed");
+                                logger.LogError("Test-001 - Failed");
                         }
 
                         // Delete the newly created device - cleanup
-                        await mClient.DeleteDevice(4, "https://iot-sandbox.clearblade.com",
-                                            "92e9f2b60cd482c3b6e19984e48401",
-                                            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                            "Test-001-Device", "Test-001-Device");
+                        await mClient.DeleteDevice(4, "Test-001-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-001-Device");
                     }
                 }
 
                 // Test-002 - Send Command to Device
                 if (bTest002 || bAllTests)
                 {
-                    // TBD - Need to obtain the token from authorization service
                     logger.LogInformation("Running Test-002 - Send Command to Device");
 
+                    var data = new
+                    {
+                        binaryData = "QUJD",
+                        versionToUpdate = "1"
+                    };
+
                     // Create new device to send command to
-                    var resultPre = await mClient.CreateDevice(4, "https://iot-sandbox.clearblade.com",
-                                                                "92e9f2b60cd482c3b6e19984e48401",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                                                "Test-002-Device", "Test-002-Device");
+                    var resultPre = await mClient.CreateDevice(4, "Test-002-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Test-002-Device");
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
-                        logger.LogInformation("Test-002 - Failed");
+                        logger.LogError("Test-002 - Failed");
 
                     // Now send the message to newly create device
-                    var result002 = await mClient.SendCommandToDevice(4, "https://iot-sandbox.clearblade.com",
-                                                                "92e9f2b60cd482c3b6e19984e48401",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                                                "Test-002-Device", data);
+                    var result002 = await mClient.SendCommandToDevice(4, "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-002-Device", data);
                     if (!result002)
-                        logger.LogInformation("Test-002 - Failed");
+                        logger.LogError("Test-002 - Failed");
                     else
                     {
                         logger.LogInformation("Test-002 - Succeeded");
                     }
 
                     // Delete the newly created device - cleanup
-                    await mClient.DeleteDevice(4, "https://iot-sandbox.clearblade.com",
-                                        "92e9f2b60cd482c3b6e19984e48401",
-                                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                        "Test-002-Device", "Test-002-Device");
+                    await mClient.DeleteDevice(4, "Test-002-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-002-Device");
                 }
 
                 // Test-003 - Modify Device config
                 if (bTest003 || bAllTests)
                 {
-                    // TBD - Need to obtain the token from authorization service
+                    // Create new device to send command to
+                    var resultPre = await mClient.CreateDevice(4, "Test-003-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Test-003-Device");
+                    if (!resultPre.Item1 || (resultPre.Item2 == null))
+                        logger.LogError("Test-003 - Failed");
+                    
                     logger.LogInformation("Running Test-003 - Modify device config");
-                    data = new
+                    var data = new
                     {
                         binaryData = "QUJD",
-                        versionToUpdate = "19"
+                        versionToUpdate = "1"
                     };
-                    var result003 = await mClient.ModifyCloudToDeviceConfig(4, "https://iot-sandbox.clearblade.com",
-                                                                "92e9f2b60cd482c3b6e19984e48401",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                                                "PD-103-Device", data);
+                    var result003 = await mClient.ModifyCloudToDeviceConfig(4, "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-003-Device", data);
                     if (!result003)
-                        logger.LogInformation("Test-003 - Failed");
+                        logger.LogError("Test-003 - Failed");
                     else
                     {
                         logger.LogInformation("Test-003 - Succeeded");
                     }
+                    // Delete the newly created device - cleanup
+                    await mClient.DeleteDevice(4, "Test-003-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-003-Device");
                 }
 
                 // Test-004 - Create Device
                 if (bTest004 || bAllTests)
                 {
                     logger.LogInformation("Running Test-004 - Create Device");
-                    // TBD - Need to obtain the token from authorization service
 
                     // Delete the device with ID "Test-004-Device" if it already existed.
-                    await mClient.DeleteDevice(4, "https://iot-sandbox.clearblade.com",
-                                            "92e9f2b60cd482c3b6e19984e48401",
-                                            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                            "Test-004-Device", "Test-004-Device");
+                    await mClient.DeleteDevice(4, "Test-004-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-004-Device");
 
                     // Create new device
-                    var result004 = await mClient.CreateDevice(4, "https://iot-sandbox.clearblade.com",
-                                                                "92e9f2b60cd482c3b6e19984e48401",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                                                "Test-004-Device", "Test-004-Device");
+                    var result004 = await mClient.CreateDevice(4, "Test-004-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-004-Device");
                     if (!result004.Item1 || (result004.Item2 == null))
-                        logger.LogInformation("Test-004 - Failed");
+                        logger.LogError("Test-004 - Failed");
                     else
                     {
                         // Verify if the device exists
-                        var result = await mClient.GetDevicesList(4, "https://iot-sandbox.clearblade.com",
-                                                                    "92e9f2b60cd482c3b6e19984e48401",
-                                                                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                                                    "projects/ingressdevelopmentenv/locations/us-central1/registries/PD-103-Registry");
+                        var result = await mClient.GetDevicesList(4, "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry");
                         if (!result.Item1)
-                            logger.LogInformation("Test-004 - Failed");
+                            logger.LogError("Test-004 - Failed");
                         else
                         {
                             bool bSuccess = false;
@@ -218,14 +192,11 @@ namespace ClearBlade.API.dotnet.client
                                 logger.LogInformation("Test-004 - Succeeded");
 
                                 // Delete the newly created device - cleanup
-                                await mClient.DeleteDevice(4, "https://iot-sandbox.clearblade.com",
-                                                    "92e9f2b60cd482c3b6e19984e48401",
-                                                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                                    "Test-004-Device", "Test-004-Device");
+                                await mClient.DeleteDevice(4, "Test-004-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-004-Device");
                             }
                             else
                             {
-                                logger.LogInformation("Test-004 - Failed");
+                                logger.LogError("Test-004 - Failed");
                             }
                         }
                     }
@@ -234,36 +205,26 @@ namespace ClearBlade.API.dotnet.client
                 // Test-005 - Delete Device
                 if (bTest005 || bAllTests)
                 {
-                    // TBD - Need to obtain the token from authorization service
                     logger.LogInformation("Running Test-005 - Delete Device");
 
                     // First create a device to delete it
-                    var resultPre = await mClient.CreateDevice(4, "https://iot-sandbox.clearblade.com",
-                                            "92e9f2b60cd482c3b6e19984e48401",
-                                            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                            "Test-005-Device", "Test-005-Device");
+                    var resultPre = await mClient.CreateDevice(4, "Test-005-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-005-Device");
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
-                        logger.LogInformation("Test-005 - Failed");
+                        logger.LogError("Test-005 - Failed");
                     else
                     {
 
-                        var result005 = await mClient.DeleteDevice(4, "https://iot-sandbox.clearblade.com",
-                                                                "92e9f2b60cd482c3b6e19984e48401",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                                                "Test-005-Device", "Test-005-Device");
+                        var result005 = await mClient.DeleteDevice(4, "Test-005-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-005-Device");
                         if (!result005.Item1 || (result005.Item2 == null))
-                            logger.LogInformation("Test-005 - Failed");
+                            logger.LogError("Test-005 - Failed");
                         else
                         {
                             // try to get the device
-                            var resultPost = await mClient.GetDevice(4, "https://iot-sandbox.clearblade.com",
-                                            "92e9f2b60cd482c3b6e19984e48401",
-                                            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                            "Test-005-Device");
+                            var resultPost = await mClient.GetDevice(4, "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-005-Device");
                             if (!resultPost.Item1 || (resultPost.Item2 == null))
                                 logger.LogInformation("Test-005 - Succeeded"); // Device does not exist means it is deleted
                             else
-                                logger.LogInformation("Test-005 - Failed"); // Device still exists. Means test case failed.
+                                logger.LogError("Test-005 - Failed"); // Device still exists. Means test case failed.
                         }
                     }
                 }
@@ -271,35 +232,25 @@ namespace ClearBlade.API.dotnet.client
                 // Test-006 - Get Device details
                 if (bTest006 || bAllTests)
                 {
-                    // TBD - Need to obtain the token from authorization service
                     logger.LogInformation("Running Test-006 - Get Device");
 
                     // First create a device to get its details
-                    var resultPre = await mClient.CreateDevice(4, "https://iot-sandbox.clearblade.com",
-                        "92e9f2b60cd482c3b6e19984e48401",
-                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                        "Test-006-Device", "Test-006-Device");
+                    var resultPre = await mClient.CreateDevice(4, "Test-006-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-006-Device");
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
-                        logger.LogInformation("Test-006 - Failed");
+                        logger.LogError("Test-006 - Failed");
 
-                    var result006 = await mClient.GetDevice(4, "https://iot-sandbox.clearblade.com",
-                                                                "92e9f2b60cd482c3b6e19984e48401",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                                                "Test-006-Device");
+                    var result006 = await mClient.GetDevice(4, "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-006-Device");
                     if (!result006.Item1 || (result006.Item2 == null))
-                        logger.LogInformation("Test-006 - Failed");
+                        logger.LogError("Test-006 - Failed");
                     else
                     {
                         if(string.Compare(result006.Item2.name, "Test-006-Device", true) == 0)
                             logger.LogInformation("Test-006 - Succeeded");
                         else
-                            logger.LogInformation("Test-006 - Failed");
+                            logger.LogError("Test-006 - Failed");
 
                         // Delete the newly created device - cleanup
-                        await mClient.DeleteDevice(4, "https://iot-sandbox.clearblade.com",
-                                            "92e9f2b60cd482c3b6e19984e48401",
-                                            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                            "Test-006-Device", "Test-006-Device");
+                        await mClient.DeleteDevice(4, "Test-006-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-006-Device");
 
                     }
                 }
@@ -307,118 +258,82 @@ namespace ClearBlade.API.dotnet.client
                 // Test-007 - Get Device configuration details
                 if (bTest007 || bAllTests)
                 {
-                    // TBD - Need to obtain the token from authorization service
                     logger.LogInformation("Running Test-007 - Get Device");
 
                     // First create a device to get its configuration details
-                    var resultPre = await mClient.CreateDevice(4, "https://iot-sandbox.clearblade.com",
-                        "92e9f2b60cd482c3b6e19984e48401",
-                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                        "Test-007-Device", "Test-007-Device");
+                    var resultPre = await mClient.CreateDevice(4, "Test-007-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-007-Device");
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
-                        logger.LogInformation("Test-007 - Failed - Failed while creating new device");
+                        logger.LogError("Test-007 - Failed - Failed while creating new device");
 
                     // Next set some configuration information
-                    data = new
+                    var data = new
                     {
                         binaryData = "QUJD",
                         versionToUpdate = "1"
                     };
-                    var resultPre1 = await mClient.ModifyCloudToDeviceConfig(4, "https://iot-sandbox.clearblade.com",
-                                                                "92e9f2b60cd482c3b6e19984e48401",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                                                "Test-007-Device", data);
+                    var resultPre1 = await mClient.ModifyCloudToDeviceConfig(4, "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-007-Device", data);
                     if (!resultPre1)
-                        logger.LogInformation("Test-007 - Failed - Failed while setting configuration");
+                        logger.LogError("Test-007 - Failed - Failed while setting configuration");
                     
                     // Actual test
-                    var result007 = await mClient.GetDeviceConfig(4, "https://iot-sandbox.clearblade.com",
-                                                                "92e9f2b60cd482c3b6e19984e48401",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                                                "Test-007-Device", "2");
+                    var result007 = await mClient.GetDeviceConfig(4, "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-007-Device", "2");
                     if (!result007.Item1 || (result007.Item2 == null))
-                        logger.LogInformation("Test-007 - Failed");
+                        logger.LogError("Test-007 - Failed");
                     else
                     {
                         if (string.Compare(result007.Item2.binaryData, "QUJD", true) == 0)
                             logger.LogInformation("Test-007 - Succeeded");
                         else
-                            logger.LogInformation("Test-007 - Failed");
-
-                        // Delete the newly created device - cleanup
-                        await mClient.DeleteDevice(4, "https://iot-sandbox.clearblade.com",
-                                            "92e9f2b60cd482c3b6e19984e48401",
-                                            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                            "Test-007-Device", "Test-007-Device");
+                            logger.LogError("Test-007 - Failed");
                     }
+                    // Delete the newly created device - cleanup
+                    await mClient.DeleteDevice(4, "Test-007-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-007-Device");
                 }
 
                 // Test-008 - Get Device configuration details
                 if (bTest008 || bAllTests)
                 {
-                    // TBD - Need to obtain the token from authorization service
                     logger.LogInformation("Running Test-008 - Get Device");
 
                     // First create a device to get its configuration details
-                    var resultPre = await mClient.CreateDevice(4, "https://iot-sandbox.clearblade.com",
-                        "92e9f2b60cd482c3b6e19984e48401",
-                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                        "Test-008-Device", "Test-008-Device");
+                    var resultPre = await mClient.CreateDevice(4, "Test-008-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-008-Device");
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
-                        logger.LogInformation("Test-008 - Failed - Failed while creating new device");
+                        logger.LogError("Test-008 - Failed - Failed while creating new device");
 
                    
                     // Actual test - Bind Device
-                    var result008 = await mClient.BindDeviceToGateway(4, "https://iot-sandbox.clearblade.com",
-                                                                "92e9f2b60cd482c3b6e19984e48401",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                                                "PD-105-Registry", "TestGateway", "Test-008-Device");
+                    var result008 = await mClient.BindDeviceToGateway(4, "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry", "TestGateway", "Test-008-Device");
                     if (!result008)
-                        logger.LogInformation("Test-008 - Failed");
+                        logger.LogError("Test-008 - Failed");
                     else
                     {
                         // Actual test - UnBind Device
-                        result008 = await mClient.UnBindDeviceFromGateway(4, "https://iot-sandbox.clearblade.com",
-                                                                    "92e9f2b60cd482c3b6e19984e48401",
-                                                                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                                                    "PD-105-Registry", "TestGateway", "Test-008-Device");
+                        result008 = await mClient.UnBindDeviceFromGateway(4, "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry", "TestGateway", "Test-008-Device");
                         if (!result008)
-                            logger.LogInformation("Test-008 - Failed");
+                            logger.LogError("Test-008 - Failed");
                         else
                             logger.LogInformation("Test-008 - Succeeded");
 
                         // Delete the newly created device - cleanup
-                        await mClient.DeleteDevice(4, "https://iot-sandbox.clearblade.com",
-                                            "92e9f2b60cd482c3b6e19984e48401",
-                                            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                            "Test-008-Device", "Test-008-Device");
+                        await mClient.DeleteDevice(4, "Test-008-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-008-Device");
                     }
                 }
 
                 // Test-009 - Get Registry configuration details
                 if (bTest009 || bAllTests)
                 {
-                    // TBD - Need to obtain the token from authorization service
                     logger.LogInformation("Running Test-009 - Get Registry configuration");
 
                     // Next set some configuration information
-                    data = new
-                    {
-                        binaryData = "QUJD",
-                        versionToUpdate = "1"
-                    };
-                    var result009 = await mClient.GetRegistryConfig(4, "https://iot-sandbox.clearblade.com",
-                                                                "92e9f2b60cd482c3b6e19984e48401",
-                                                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2U5ZjJiNjBjODhlOWZjY2VkZGQ1YTZkZTBjIiwic2lkIjoiNjJmYzBlMTMtZWNkMy00OTUyLTgyN2UtOTI5YWJlODVkMTY2IiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjgxNzY0NjJ9.M_ptSQZ6Y1qCzC8TszsbYo3Y8pjE56lQW9I4psin3JI",
-                                                                "PD-105-Registry");
+                    var result009 = await mClient.GetRegistryConfig(4, "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry");
                     if (!result009.Item1 || (result009.Item2 == null))
-                        logger.LogInformation("Test-009 - Failed");
+                        logger.LogError("Test-009 - Failed");
                     else
                     {
-                        if (string.Compare(result009.Item2.id, "PD-105-Registry", true) == 0)
+                        if (string.Compare(result009.Item2.id, "Sample-New-Registry", true) == 0)
                             logger.LogInformation("Test-009 - Succeeded");
                         else
-                            logger.LogInformation("Test-009 - Failed");
+                            logger.LogError("Test-009 - Failed");
                     }
                 }
                 //Console.ReadLine();

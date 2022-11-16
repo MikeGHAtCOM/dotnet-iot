@@ -1,6 +1,7 @@
 ﻿using ClearBlade.API.dotnet.client.core.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Refit;
 using System;
 using System.Collections.Generic;
@@ -13,15 +14,19 @@ namespace ClearBlade.API.dotnet.client.core.Services
     public class DeviceService : IDeviceService
     {
         private readonly ILogger<DeviceService> _logger;
-        private IDevicesAPIContract? _api;
+        private IDevicesApiContract? _api;
+        private readonly IAdminService _adminSvc;
+        private RegistryKeyModel rkm;
 
         /// <summary>
         /// Constructor which initializes logging service
         /// </summary>
         /// <param name="logger"></param>
-        public DeviceService(ILogger<DeviceService> logger)
+        public DeviceService(ILogger<DeviceService> logger, IAdminService adminSvc)
         {
             _logger = logger;
+            _api = null;
+            _adminSvc = adminSvc;
         }
 
         /// <summary>
@@ -31,27 +36,89 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// </summary>
         /// <param name="handler"></param>
         /// <param name="baseUrl"></param>
-        public void Initialize(HttpLoggingHandler handler, string baseUrl)
+        public async Task<bool> Initialize(string parentPath)
         {
-            _api = RestService.For<IDevicesAPIContract>(new HttpClient(handler)
+            bool bRetVal = true;
+
+            if (_api != null)
             {
-                BaseAddress = new Uri(baseUrl)
-            });
+                //already initialized
+                return bRetVal;
+            }
+
+            try
+            {
+                // Get registry details from the parent path
+                RegistryModel rm = new RegistryModel();
+                string[] vs = parentPath.Split('/');
+                if (vs.Length < 6)
+                {
+                    _logger.LogError("Incorrect Parent path found. Please use format \"projects/[PROJECT]/locations/[LOCATION]/registries/[REGISTRY]\" ");
+                    return false;
+                }
+
+                for (int i = 0; i < vs.Length; i++)
+                {
+                    if(string.Compare(vs[i], "projects",true) == 0)
+                    {
+                        i++; // Next item in array will be 
+                        rm.project = vs[i];
+                    }
+                    if (string.Compare(vs[i], "locations", true) == 0)
+                    {
+                        i++; // Next item in array will be 
+                        rm.region = vs[i];
+                    }
+                    if (string.Compare(vs[i], "registries", true) == 0)
+                    {
+                        i++; // Next item in array will be 
+                        rm.registry = vs[i];
+                    }
+                }
+
+                // Further use the admin account to obtain api token etc.
+                var rmKeyRes = await _adminSvc.GetRegistryCredentials(rm);
+                if(!rmKeyRes.Item1 || (rmKeyRes.Item2 == null))
+                    return false;
+
+                rkm = rmKeyRes.Item2;
+
+                HttpLoggingHandler handler = new HttpLoggingHandler(rkm.serviceAccountToken);
+                string baseUrl = rkm.url;
+                _api = RestService.For<IDevicesApiContract>(new HttpClient(handler)
+                {
+                    BaseAddress = new Uri(baseUrl)
+                });
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee, "System Error while initializing Device Service. Message: ", ee.Message);
+            }
+
+            return bRetVal;
+        }
+
+        /// <summary>
+        /// Method used to reset the api so that, same service could be used against
+        /// different registry 
+        /// </summary>
+        public void Reset()
+        {
+            _api = null;
         }
 
         /// <summary>
         /// Method to get list of devices
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
         /// <param name="parentPath"></param>
         /// <returns>List of Devices</returns>
-        public async Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(int version, string system_key, string parentPath)
+        public async Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(int version, string parentPath)
         {
             _logger.LogInformation("Getting devices list for parent {parentPath}.", parentPath);
             if(_api == null)
                 return (false, new List<DeviceModel>());
-            var response = await _api.GetDevicesList(version, system_key, parentPath);
+            var response = await _api.GetDevicesList(version, rkm.systemKey, parentPath);
             if (response.IsSuccessStatusCode && response.Content != null)
             {
                 _logger.LogInformation("Found {y} devices", response.Content.devices.Count);
@@ -66,17 +133,16 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// Method to get list of devices.
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
         /// <param name="deviceName"></param>
         /// <param name="methodName"></param>
         /// <param name="body"></param>
         /// <returns>Success / Failure</returns>
-        public async Task<bool> PostToDevice(int version, string system_key, string deviceName, string methodName, object body)
+        public async Task<bool> PostToDevice(int version, string deviceName, string methodName, object body)
         {
             _logger.LogInformation("Calling {method} for device {name}.", methodName, deviceName);
             if (_api == null)
                 return false;
-            var response = await _api.PostToDevice(version, system_key, deviceName, methodName, body);
+            var response = await _api.PostToDevice(version, rkm.systemKey, deviceName, methodName, body);
             if (response.IsSuccessStatusCode)
             {
                 _logger.LogInformation("Successfully completed calling method on device");
@@ -91,15 +157,14 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// Api to create new device
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
         /// <param name="deviceIn"></param>
         /// <returns>Device Model</returns>
-        public async Task<(bool, DeviceCreateResponseModel?)> CreateDevice(int version, string system_key, DeviceCreateModel deviceIn)
+        public async Task<(bool, DeviceCreateResponseModel?)> CreateDevice(int version, DeviceCreateModel deviceIn)
         {
             _logger.LogInformation("Creating new device with id {id}.", deviceIn.id);
             if (_api == null)
                 return (false, null);
-            var response = await _api.CreateDevice(version, system_key, deviceIn);
+            var response = await _api.CreateDevice(version, rkm.systemKey, deviceIn);
             if (response.IsSuccessStatusCode)
             {
                 _logger.LogInformation("Successfully created the device");
@@ -114,15 +179,14 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// Api to delete a Device
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
         /// <param name="deviceIn"></param>
         /// <returns></returns>
-        public async Task<(bool, int?)> DeleteDevice(int version, string system_key, DeviceCreateModel deviceIn)
+        public async Task<(bool, int?)> DeleteDevice(int version, DeviceCreateModel deviceIn)
         {
             _logger.LogInformation("Deleting device with id {id}.", deviceIn.id);
             if (_api == null)
                 return (false, null);
-            var response = await _api.DeleteDevice(version, system_key, deviceIn.name, deviceIn);
+            var response = await _api.DeleteDevice(version, rkm.systemKey, deviceIn.name, deviceIn);
             if (response.IsSuccessStatusCode)
             {
                 _logger.LogInformation("Successfully deleted the device");
@@ -137,15 +201,14 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// Api to obtain details of a device
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
         /// <param name="deviceName"></param>
         /// <returns>success / failure - Device Model</returns>
-        public async Task<(bool, DeviceModel?)> GetDevice(int version, string system_key, string deviceName)
+        public async Task<(bool, DeviceModel?)> GetDevice(int version, string deviceName)
         {
             _logger.LogInformation("Get details of a device with name {name}.", deviceName);
             if (_api == null)
                 return (false, null);
-            var response = await _api.GetDevice(version, system_key, deviceName);
+            var response = await _api.GetDevice(version, rkm.systemKey, deviceName);
             if (response.IsSuccessStatusCode)
             {
                 _logger.LogInformation("Successfully obtained the device details");
@@ -160,16 +223,15 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// Api to obtain configuration details of a device
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
         /// <param name="deviceName"></param>
         /// <param name="localVersion"></param>
         /// <returns>success / failure - Device config Model</returns>
-        public async Task<(bool, DeviceConfigResponseModel?)> GetDeviceConfig(int version, string system_key, string deviceName, string localVersion)
+        public async Task<(bool, DeviceConfigResponseModel?)> GetDeviceConfig(int version, string deviceName, string localVersion)
         {
             _logger.LogInformation("Get configuration details of a device with name {name}.", deviceName);
             if (_api == null)
                 return (false, null);
-            var response = await _api.GetDeviceConfig(version, system_key, deviceName, localVersion);
+            var response = await _api.GetDeviceConfig(version, rkm.systemKey, deviceName, localVersion);
             if (response.IsSuccessStatusCode)
             {
                 _logger.LogInformation("Successfully obtained the device configuration details");
@@ -184,17 +246,16 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// Api to bind or unbind device to/from a gateway
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
         /// <param name="parent"></param>
         /// <param name="methodName"></param>
         /// <param name="body"></param>
         /// <returns>Success / Failure</returns>
-        public async Task<bool> DeviceToGateway(int version, string system_key, string parent, string methodName, DeviceToGatewayModel body)
+        public async Task<bool> DeviceToGateway(int version, string parent, string methodName, DeviceToGatewayModel body)
         {
             _logger.LogInformation("{methodName} - device with id {id} to / fro Gateway.", methodName, body.deviceId);
             if (_api == null)
                 return false;
-            var response = await _api.DeviceToGateway(version, system_key, parent, methodName, body);
+            var response = await _api.DeviceToGateway(version, rkm.systemKey, parent, methodName, body);
             if (response.IsSuccessStatusCode)
             {
                 _logger.LogInformation("Successfully completed method {methodName}", methodName);
@@ -209,15 +270,14 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// Api to get configuration of a registry
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
         /// <param name="name"></param>
         /// <returns>Success / Failure and RegistryConfigModel</returns>
-        public async Task<(bool, RegistryConfigModel)> GetRegistryConfig(int version, string system_key, string name)
+        public async Task<(bool, RegistryConfigModel?)> GetRegistryConfig(int version, string name)
         {
             _logger.LogInformation("Get configuration details of a registry with name {name}.", name);
             if (_api == null)
                 return (false, null);
-            var response = await _api.GetRegistryConfig(version, system_key, name);
+            var response = await _api.GetRegistryConfig(version, rkm.systemKey, name);
             if (response.IsSuccessStatusCode)
             {
                 _logger.LogInformation("Successfully obtained the registry configuration details");

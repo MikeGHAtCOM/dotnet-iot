@@ -14,81 +14,74 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// the base URL of the ClearBlade regional IOT and a handler that contains the
         /// authorization token
         /// </summary>
-        /// <param name="handler"></param>
-        /// <param name="baseUrl"></param>
-        void Initialize(HttpLoggingHandler handler, string baseUrl);
+        /// <param name="parentPath"></param>
+        Task<bool> Initialize(string parentPath);
+        /// <summary>
+        /// Method used to reset the api so that, same service could be used against
+        /// different registry 
+        /// </summary>
+        void Reset();
         /// <summary>
         /// Method to get list of devices.
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
         /// <param name="parentPath"></param>
         /// <returns>List of Devices</returns>
-        Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(int version, string system_key, string parentPath);
+        Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(int version, string parentPath);
         /// <summary>
         /// A generic api to call any post method related to Devices
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
         /// <param name="deviceName"></param>
         /// <param name="methodName"></param>
         /// <param name="body"></param>
         /// <returns>Success / Failure</returns>
-        Task<bool> PostToDevice(int version, string system_key, string deviceName, string methodName, object body);
+        Task<bool> PostToDevice(int version, string deviceName, string methodName, object body);
         /// <summary>
         /// Api to create new device
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
         /// <param name="deviceIn"></param>
         /// <returns>Device Model</returns>
-        Task<(bool, DeviceCreateResponseModel?)> CreateDevice(int version, string system_key, DeviceCreateModel deviceIn);
+        Task<(bool, DeviceCreateResponseModel?)> CreateDevice(int version, DeviceCreateModel deviceIn);
         /// <summary>
         /// Api to delete a device
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
-        /// <param name="deviceName"></param>
         /// <param name="deviceIn"></param>
         /// <returns>Error number</returns>
-        Task<(bool, int?)> DeleteDevice(int version, string system_key, DeviceCreateModel deviceIn);
+        Task<(bool, int?)> DeleteDevice(int version, DeviceCreateModel deviceIn);
         /// <summary>
         /// Api to obtain details of a device
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
         /// <param name="deviceName"></param>
         /// <returns>success / failure - Device Model</returns>
-        Task<(bool, DeviceModel?)> GetDevice(int version, string system_key, string deviceName);
-
+        Task<(bool, DeviceModel?)> GetDevice(int version, string deviceName);
         /// <summary>
         /// Api to obtain configuration details of a device
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
         /// <param name="deviceName"></param>
         /// <param name="localVersion"></param>
         /// <returns>success / failure - Device config Model</returns>
-        Task<(bool, DeviceConfigResponseModel?)> GetDeviceConfig(int version, string system_key, string deviceName, string localVersion);
-
+        Task<(bool, DeviceConfigResponseModel?)> GetDeviceConfig(int version, string deviceName, string localVersion);
         /// <summary>
         /// Api to bind or unbind device to/from a gateway
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
         /// <param name="parent"></param>
         /// <param name="methodName"></param>
         /// <param name="body"></param>
         /// <returns>Success / Failure</returns>
-        Task<bool> DeviceToGateway(int version, string system_key, string parent, string methodName, DeviceToGatewayModel body);
+        Task<bool> DeviceToGateway(int version, string parent, string methodName, DeviceToGatewayModel body);
 
         /// <summary>
         /// Api to get configuration of a registry
         /// </summary>
         /// <param name="version"></param>
-        /// <param name="system_key"></param>
         /// <param name="name"></param>
         /// <returns>Success / Failure and RegistryConfigModel</returns>
-        Task<(bool, RegistryConfigModel)> GetRegistryConfig(int version, string system_key, string name);
+        Task<(bool, RegistryConfigModel?)> GetRegistryConfig(int version, string name);
     }
 }

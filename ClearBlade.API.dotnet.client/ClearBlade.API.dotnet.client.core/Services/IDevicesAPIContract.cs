@@ -8,7 +8,7 @@ using Refit;
 
 namespace ClearBlade.API.dotnet.client.core.Services
 {
-    internal interface IDevicesAPIContract
+    internal interface IDevicesApiContract
     {
         /// <summary>
         /// API contract for /cloudiot_devices api.
