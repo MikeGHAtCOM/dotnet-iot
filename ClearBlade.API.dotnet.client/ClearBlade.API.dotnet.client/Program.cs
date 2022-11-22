@@ -29,6 +29,7 @@ public class Program
     {
         //we will configure logging here
         services.AddLogging(configure => configure.AddConsole())
-                .AddTransient<IDeviceService, DeviceService>();
+                .AddSingleton<IDeviceService, DeviceService>()
+                .AddSingleton<IAdminService, AdminService>();
     }
 }

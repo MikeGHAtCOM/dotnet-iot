@@ -13,7 +13,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
     {
         private readonly string _accessToken;
 
-        public HttpLoggingHandler(string accessToken, HttpMessageHandler innerHandler = null)
+        public HttpLoggingHandler(string accessToken, HttpMessageHandler? innerHandler = null)
             : base(innerHandler ?? new HttpClientHandler())
         {
             _accessToken = accessToken;
@@ -25,24 +25,27 @@ namespace ClearBlade.API.dotnet.client.core.Services
             var msg = $"[{id} -   Request]";
 
             Debug.WriteLine($"{msg}========Start==========");
-            Debug.WriteLine($"{msg} {req.Method} {req.RequestUri.PathAndQuery} {req.RequestUri.Scheme}/{req.Version}");
-            Debug.WriteLine($"{msg} Host: {req.RequestUri.Scheme}://{req.RequestUri.Host}");
+            Debug.WriteLine($"{msg} {req.Method} {req?.RequestUri?.PathAndQuery} {req?.RequestUri?.Scheme}/{req?.Version}");
+            Debug.WriteLine($"{msg} Host: {req?.RequestUri?.Scheme}://{req?.RequestUri?.Host}");
 
-            foreach (var header in req.Headers)
-                Debug.WriteLine($"{msg} {header.Key}: {string.Join(", ", header.Value)}");
-
-            if (req.Content != null)
+            if (req != null)
             {
-                foreach (var header in req.Content.Headers)
+                foreach (var header in req.Headers)
                     Debug.WriteLine($"{msg} {header.Key}: {string.Join(", ", header.Value)}");
 
-                if (req.Content is StringContent || this.IsTextBasedContentType(req.Headers) || this.IsTextBasedContentType(req.Content.Headers))
+                if (req.Content != null)
                 {
-                    var result = await req.Content.ReadAsStringAsync();
+                    foreach (var header in req.Content.Headers)
+                        Debug.WriteLine($"{msg} {header.Key}: {string.Join(", ", header.Value)}");
 
-                    Debug.WriteLine($"{msg} Content:");
-                    Debug.WriteLine($"{msg} {string.Join("", result.Cast<char>().Take(255))}...");
+                    if (req.Content is StringContent || this.IsTextBasedContentType(req.Headers) || this.IsTextBasedContentType(req.Content.Headers))
+                    {
+                        var result = await req.Content.ReadAsStringAsync();
 
+                        Debug.WriteLine($"{msg} Content:");
+                        Debug.WriteLine($"{msg} {string.Join("", result.Cast<char>().Take(255))}...");
+
+                    }
                 }
             }
 
@@ -63,7 +66,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
 
             var resp = response;
 
-            Debug.WriteLine($"{msg} {req.RequestUri.Scheme.ToUpper()}/{resp.Version} {(int)resp.StatusCode} {resp.ReasonPhrase}");
+            Debug.WriteLine($"{msg} {req?.RequestUri?.Scheme.ToUpper()}/{resp.Version} {(int)resp.StatusCode} {resp.ReasonPhrase}");
 
             foreach (var header in resp.Headers)
                 Debug.WriteLine($"{msg} {header.Key}: {string.Join(", ", header.Value)}");
@@ -93,8 +96,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
 
         bool IsTextBasedContentType(HttpHeaders headers)
         {
-            IEnumerable<string> values;
-            if (!headers.TryGetValues("Content-Type", out values))
+            if (!headers.TryGetValues("Content-Type", out IEnumerable<string>? values) || values == null || !values.Any())
                 return false;
             var header = string.Join(" ", values).ToLowerInvariant();
 
