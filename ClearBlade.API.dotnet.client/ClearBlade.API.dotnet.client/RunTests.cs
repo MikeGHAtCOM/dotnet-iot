@@ -1,4 +1,5 @@
 ﻿using ClearBlade.API.dotnet.client.core;
+using ClearBlade.API.dotnet.client.core.Models;
 using ClearBlade.API.dotnet.client.core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -27,12 +28,13 @@ namespace ClearBlade.API.dotnet.client
         static bool bTest008 = false;
         static bool bTest009 = false;
         static bool bTest010 = false;
+        static bool bTest011 = false;
         #endregion
 
         public static bool Execute(ServiceProvider serviceProvider, ILogger logger)
         {
             // Set which tests to run
-            // bTest010 = true;
+            // bTest011 = true;
             // bTest008 = true;
              //bTest007 = true;
             // bTest004 = true;
@@ -366,6 +368,53 @@ namespace ClearBlade.API.dotnet.client
                                 logger.LogInformation("Test-010 - Succeeded");
                             else
                                 logger.LogError("Test-010 - Failed");
+                        }
+                    }
+                }
+
+                // Test-011 - Patch Device configuration details
+                if (bTest011 || bAllTests)
+                {
+                    logger.LogInformation("Running Test-011 - patch Device configuration");
+
+                    string deviceName = "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Sample-New-Device";
+
+                    // First get some configuration information
+                    var resultPre = await mClient.GetDevice(4, deviceName);
+                    if (!resultPre.Item1 || (resultPre.Item2 == null))
+                        logger.LogError("Test-011 - Failed to find Device configuration");
+                    else
+                    {
+                        string updateMask = "metadata";
+                        string pubKey = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5P0Z4OUD5PSjri8xexGo\n6eQ39NGyQbXamIgWAwvnAs/oDRVqEejE2nwDhnpykaCGLkuDEN0LPd2wF+vC2Cq3\nY3YvkJh71IkjuAjMZQ+00CXdezfCjmTtEpMCNA3cV+G1g6uIcdEpHKs0YHfC9CFQ\nrjkc7tl3idmcQLngIov/gsFY7D1pbOgkCVVcZCRLgsdFfhCUYwYCvdEVJP3w+5mG\nybvmhNRbbFG7eG3+hmZoOg0h3f6r2fqgSx6l0+Z3D77SRT6lBEHvGDlxb08ASeuE\n0SJAc6PdAKd3FDqdZok4z1qJsgMqtU/ZGJJG54pNECWmhoOar+aQmmqnZ6kGQ5cn\nEwIDAQAB\n-----END PUBLIC KEY-----\n";
+                        resultPre.Item2.credentials.Add(new core.Models.Credential
+                        {
+                            expirationTime = "",
+                            publicKey = new PublicKey
+                            {
+                                format = "RSA_PEM",
+                                key = pubKey
+                            }
+                        });
+
+                        var result011 = await mClient.PatchDevice(4, deviceName, updateMask, resultPre.Item2);
+                        if (!result011.Item1 || (result011.Item2 == null))
+                            logger.LogError("Test-011 - Failed to update Registry configuration");
+                        else
+                        {
+                            string resPubKey = string.Empty;
+                            if ((result011.Item2 != null) && result011.Item2.credentials.Count > 0 && result011.Item2.credentials.FirstOrDefault() != null)
+                            {
+                                foreach (var item in result011.Item2.credentials)
+                                {
+                                    resPubKey = item.publicKey.key;
+                                }
+                            }
+                            if ((string.Compare(result011.Item2?.id, "Sample-New-Device", true) == 0) &&
+                            (string.Compare(resPubKey, pubKey, true) == 0))
+                                logger.LogInformation("Test-011 - Succeeded");
+                            else
+                                logger.LogError("Test-011 - Failed");
                         }
                     }
                 }

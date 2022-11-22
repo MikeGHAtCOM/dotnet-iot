@@ -94,5 +94,16 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="registryConfig"></param>
         /// <returns>Success/Failure and RegistryConfigModel</returns>
         Task<(bool, RegistryConfigModel?)> PatchRegistry(int version, string registryName, string updateMask, RegistryConfigModel registryConfig);
+
+        /// <summary>
+        /// Api to update the device configuration
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="admin_system_key"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="updateMask"></param>
+        /// <param name="device"></param>
+        /// <returns>Success/Failure and DeviceModel</returns>
+        Task<(bool, DeviceModel?)> PatchDevice(int version, string deviceName, string updateMask, DeviceModel device);
     }
 }

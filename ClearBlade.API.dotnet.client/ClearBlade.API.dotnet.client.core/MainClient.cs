@@ -210,5 +210,22 @@ namespace ClearBlade.API.dotnet.client.core
 
             return await _deviceSvc.PatchRegistry(version, name, updateMask, registryConfig);
         }
+
+        /// <summary>
+        /// Helper class method to update device configuration
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="name"></param>
+        /// <param name="updateMask"></param>
+        /// <param name="deviceConfig"></param>
+        /// <returns>Success / Failure and DeviceModel</returns>
+        public async Task<(bool, DeviceModel?)> PatchDevice(int version, string name, string updateMask, DeviceModel deviceConfig)
+        {
+            // Initialize the service
+            if (!await _deviceSvc.Initialize(name))
+                return (false, null);
+
+            return await _deviceSvc.PatchDevice(version, name, updateMask, deviceConfig);
+        }
     }
 }

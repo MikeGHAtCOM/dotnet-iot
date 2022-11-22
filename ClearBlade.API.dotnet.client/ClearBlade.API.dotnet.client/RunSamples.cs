@@ -1,4 +1,5 @@
 ﻿using ClearBlade.API.dotnet.client.core;
+using ClearBlade.API.dotnet.client.core.Models;
 using ClearBlade.API.dotnet.client.core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -26,20 +27,13 @@ namespace ClearBlade.API.dotnet.client
         static bool bBindUnBindDevice = false;
         static bool bGetRegistryConfig= false;
         static bool bPatchRegistryConfig= false;
+        static bool bPatchDeviceConfig= false;
         #endregion
 
         public static bool Execute(ServiceProvider serviceProvider, ILogger logger)
         {
             // Set which sample to run
-            //bGetDevicesList = true;
-            //bSendCommandToDevice = true;
-            //bModifyCloudToDeviceConfig = true;
-            //bCreateDevice = true;
-            //bDeleteDevice = true;
-            //bGetDeviceConfig = true;
-            //bBindUnBindDevice = true;
-            //bGetRegistryConfig = true;
-            bPatchRegistryConfig = true;
+            bPatchDeviceConfig = true;
 
             logger.LogInformation("Running selected DotNet SDK samples");
 
@@ -231,10 +225,10 @@ namespace ClearBlade.API.dotnet.client
 
                     var result = await mClient.GetRegistryConfig(4, name);
                     if (!result.Item1 || (result.Item2 == null))
-                        logger.LogError("Failed to get a device configuration");
+                        logger.LogError("Failed to get a registry configuration");
                     else
                     {
-                        logger.LogInformation("Successfully obtained the device configuration");
+                        logger.LogInformation("Successfully obtained the registry configuration");
 
                         // Use the obtained information
                     }
@@ -255,7 +249,7 @@ namespace ClearBlade.API.dotnet.client
                         logger.LogError("Failed to get a registry configuration");
                     else
                     {
-                        logger.LogInformation("Successfully obtained the device configuration");
+                        logger.LogInformation("Successfully obtained the registry configuration");
 
                         // Use the obtained information
                         // Following are the valid mask entries -
@@ -273,6 +267,43 @@ namespace ClearBlade.API.dotnet.client
 
                         if (!result.Item1 || (result.Item2 == null))
                             logger.LogError("Failed to update a registry configuration");
+                    }
+                }
+
+                // Sample - Update configuration of a device
+                if (bPatchDeviceConfig)
+                {
+                    logger.LogInformation("Update configuration of a device");
+
+                    // While running this sample, it is assumed that, device with name
+                    // "Sample-New-Device" exists
+
+                    string name = "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/devices/Sample-New-Device";
+
+                    var result = await mClient.GetDevice(4, name);
+                    if (!result.Item1 || (result.Item2 == null))
+                        logger.LogError("Failed to get a device configuration");
+                    else
+                    {
+                        logger.LogInformation("Successfully obtained the device configuration");
+
+                        // Use the obtained information
+                        string updateMask = "metadata";
+                        string pubKey = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5P0Z4OUD5PSjri8xexGo\n6eQ39NGyQbXamIgWAwvnAs/oDRVqEejE2nwDhnpykaCGLkuDEN0LPd2wF+vC2Cq3\nY3YvkJh71IkjuAjMZQ+00CXdezfCjmTtEpMCNA3cV+G1g6uIcdEpHKs0YHfC9CFQ\nrjkc7tl3idmcQLngIov/gsFY7D1pbOgkCVVcZCRLgsdFfhCUYwYCvdEVJP3w+5mG\nybvmhNRbbFG7eG3+hmZoOg0h3f6r2fqgSx6l0+Z3D77SRT6lBEHvGDlxb08ASeuE\n0SJAc6PdAKd3FDqdZok4z1qJsgMqtU/ZGJJG54pNECWmhoOar+aQmmqnZ6kGQ5cn\nEwIDAQAB\n-----END PUBLIC KEY-----\n";
+                        result.Item2.credentials.Add(new core.Models.Credential
+                        {
+                            expirationTime = "",
+                            publicKey = new PublicKey
+                            {
+                                format = "RSA_PEM",
+                                key = pubKey
+                            }
+                        });
+
+                        result = await mClient.PatchDevice(4, name, updateMask, result.Item2);
+
+                        if (!result.Item1 || (result.Item2 == null))
+                            logger.LogError("Failed to update a device configuration");
                     }
                 }
 

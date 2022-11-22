@@ -387,5 +387,36 @@ namespace ClearBlade.API.dotnet.client.core.Services
             }
         }
 
+        /// <summary>
+        /// Api to update the device configuration
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="updateMask"></param>
+        /// <param name="deviceConfig"></param>
+        /// <returns>Success/Failure and DeviceModel</returns>
+        public async Task<(bool, DeviceModel?)> PatchDevice(int version, string deviceName, string updateMask, DeviceModel deviceConfig)
+        {
+            try
+            {
+                _logger.LogInformation("Update configuration details of a device with name {name}.", deviceName);
+                if (_api == null)
+                    return (false, null);
+                var response = await _api.PatchDevice(version, rkm.systemKey, deviceName, updateMask, deviceConfig);
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Successfully updated the device configuration details");
+                    return (true, response.Content);
+                }
+
+                _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+                return (false, null);
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee, "System Error while updating the device configuration. Message: ", ee.Message);
+                return (false, null);
+            }
+        }
     }
 }

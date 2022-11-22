@@ -108,5 +108,17 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns>RegistryConfigModel</returns>
         [Patch("/api/v/{version}/webhook/execute/{admin_system_key}/cloudiot")]
         Task<IApiResponse<RegistryConfigModel>> PatchRegistry(int version, string admin_system_key, [AliasAs("name")] string registryName, [AliasAs("updateMask")] string updateMask, [Body] RegistryConfigModel registryConfig);
+
+        /// <summary>
+        /// Api to update the device configuration
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="admin_system_key"></param>
+        /// <param name="registryName"></param>
+        /// <param name="updateMask"></param>
+        /// <param name="device"></param>
+        /// <returns>DeviceModel</returns>
+        [Patch("/api/v/{version}/webhook/execute/{admin_system_key}/cloudiot_devices")]
+        Task<IApiResponse<DeviceModel>> PatchDevice(int version, string admin_system_key, [AliasAs("name")] string deviceName, [AliasAs("updateMask")] string updateMask, [Body] DeviceModel device);
     }
 }
