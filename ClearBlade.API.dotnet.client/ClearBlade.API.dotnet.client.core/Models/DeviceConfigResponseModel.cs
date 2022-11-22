@@ -10,5 +10,11 @@ namespace ClearBlade.API.dotnet.client.core.Models
     {
         public string version { get; set; }
         public string binaryData { get; set; }
+
+        public DeviceConfigResponseModel()
+        {
+            version = string.Empty;
+            binaryData = string.Empty;
+        }
     }
 }

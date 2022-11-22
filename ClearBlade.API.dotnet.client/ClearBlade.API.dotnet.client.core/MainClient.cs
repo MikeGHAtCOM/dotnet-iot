@@ -179,6 +179,12 @@ namespace ClearBlade.API.dotnet.client.core
             return await _deviceSvc.DeviceToGateway(version, parent, "unbindDeviceFromGateway", new DeviceToGatewayModel(gatewayId, deviceId));
         }
 
+        /// <summary>
+        /// Helper class method to get registry configuration
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="name"></param>
+        /// <returns>Success / Failure and RegistryConfigModel</returns>
         public async Task<(bool, RegistryConfigModel?)> GetRegistryConfig(int version, string name)
         {
             // Initialize the service
@@ -186,6 +192,23 @@ namespace ClearBlade.API.dotnet.client.core
                 return (false, null);
 
             return await _deviceSvc.GetRegistryConfig(version, name);
+        }
+
+        /// <summary>
+        /// Helper class method to update registry configuration
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="name"></param>
+        /// <param name="updateMask"></param>
+        /// <param name="registryConfig"></param>
+        /// <returns>Success / Failure and RegistryConfigModel</returns>
+        public async Task<(bool, RegistryConfigModel?)> PatchRegistry(int version, string name, string updateMask, RegistryConfigModel registryConfig)
+        {
+            // Initialize the service
+            if (!await _deviceSvc.Initialize(name))
+                return (false, null);
+
+            return await _deviceSvc.PatchRegistry(version, name, updateMask, registryConfig);
         }
     }
 }

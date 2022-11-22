@@ -25,6 +25,7 @@ namespace ClearBlade.API.dotnet.client
         static bool bGetDeviceConfig = false;
         static bool bBindUnBindDevice = false;
         static bool bGetRegistryConfig= false;
+        static bool bPatchRegistryConfig= false;
         #endregion
 
         public static bool Execute(ServiceProvider serviceProvider, ILogger logger)
@@ -38,7 +39,7 @@ namespace ClearBlade.API.dotnet.client
             //bGetDeviceConfig = true;
             //bBindUnBindDevice = true;
             //bGetRegistryConfig = true;
-
+            bPatchRegistryConfig = true;
 
             logger.LogInformation("Running selected DotNet SDK samples");
 
@@ -218,7 +219,7 @@ namespace ClearBlade.API.dotnet.client
                     }
                 }
 
-                // Sample - Get configuration of a device
+                // Sample - Get configuration of a registry
                 if (bGetRegistryConfig)
                 {
                     logger.LogInformation("Get configuration of a registry");
@@ -236,6 +237,42 @@ namespace ClearBlade.API.dotnet.client
                         logger.LogInformation("Successfully obtained the device configuration");
 
                         // Use the obtained information
+                    }
+                }
+
+                // Sample - Update configuration of a registry
+                if (bPatchRegistryConfig)
+                {
+                    logger.LogInformation("Update configuration of a registry");
+
+                    // While running this sample, it is assumed that, registry with name
+                    // "Sample-New-Registry" exists
+
+                    string name = "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry";
+
+                    var result = await mClient.GetRegistryConfig(4, name);
+                    if (!result.Item1 || (result.Item2 == null))
+                        logger.LogError("Failed to get a registry configuration");
+                    else
+                    {
+                        logger.LogInformation("Successfully obtained the device configuration");
+
+                        // Use the obtained information
+                        // Following are the valid mask entries -
+                        // eventNotificationConfigs
+                        // stateNotificationConfig.pubsub_topic_name
+                        // mqttConfig.mqtt_enabled_state
+                        // httpConfig.http_enabled_state
+                        // logLevel
+                        // credentials
+                        string updateMask = "httpConfig.http_enabled_state,mqttConfig.mqtt_enabled_state";
+                        result.Item2.mqttConfig.mqttEnabledState = "MQTT_ENABLED";
+                        result.Item2.httpConfig.httpEnabledState = "HTTP_ENABLED";
+
+                        result = await mClient.PatchRegistry(4, name, updateMask, result.Item2);
+
+                        if (!result.Item1 || (result.Item2 == null))
+                            logger.LogError("Failed to update a registry configuration");
                     }
                 }
 

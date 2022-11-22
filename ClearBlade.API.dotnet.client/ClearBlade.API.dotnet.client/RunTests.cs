@@ -26,19 +26,20 @@ namespace ClearBlade.API.dotnet.client
         static bool bTest007 = false;
         static bool bTest008 = false;
         static bool bTest009 = false;
+        static bool bTest010 = false;
         #endregion
 
         public static bool Execute(ServiceProvider serviceProvider, ILogger logger)
         {
             // Set which tests to run
-             //bTest009 = true;
+            // bTest010 = true;
             // bTest008 = true;
              //bTest007 = true;
             // bTest004 = true;
             // bTest005 = true;
             // bTest006 = true;
             // bTest003 = true;
-            bAllTests = true;
+            // bAllTests = true;
 
             logger.LogInformation("Running selected DotNet SDK tests");
 
@@ -324,7 +325,7 @@ namespace ClearBlade.API.dotnet.client
                 {
                     logger.LogInformation("Running Test-009 - Get Registry configuration");
 
-                    // Next set some configuration information
+                    // Get configuration information
                     var result009 = await mClient.GetRegistryConfig(4, "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry");
                     if (!result009.Item1 || (result009.Item2 == null))
                         logger.LogError("Test-009 - Failed");
@@ -336,6 +337,39 @@ namespace ClearBlade.API.dotnet.client
                             logger.LogError("Test-009 - Failed");
                     }
                 }
+
+                // Test-010 - Patch Registry configuration details
+                if (bTest010 || bAllTests)
+                {
+                    logger.LogInformation("Running Test-010 - patch Registry configuration");
+
+                    string regName = "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry";
+
+                    // First get some configuration information
+                    var resultPre = await mClient.GetRegistryConfig(4, regName);
+                    if (!resultPre.Item1 || (resultPre.Item2 == null))
+                        logger.LogError("Test-010 - Failed to find Registry configuration");
+                    else
+                    {
+                        string updateMask = "httpConfig.http_enabled_state,mqttConfig.mqtt_enabled_state";
+                        resultPre.Item2.mqttConfig.mqttEnabledState = "MQTT_ENABLED";
+                        resultPre.Item2.httpConfig.httpEnabledState = "HTTP_ENABLED";
+
+                        var result010 = await mClient.PatchRegistry(4, regName, updateMask, resultPre.Item2);
+                        if (!result010.Item1 || (result010.Item2 == null))
+                            logger.LogError("Test-010 - Failed to update Registry configuration");
+                        else
+                        {
+                            if ((string.Compare(result010.Item2.id, "Sample-New-Registry", true) == 0) &&
+                                (string.Compare(result010.Item2.mqttConfig.mqttEnabledState, "MQTT_ENABLED", true) == 0) &&
+                                (string.Compare(result010.Item2.httpConfig.httpEnabledState, "HTTP_ENABLED", true) == 0))
+                                logger.LogInformation("Test-010 - Succeeded");
+                            else
+                                logger.LogError("Test-010 - Failed");
+                        }
+                    }
+                }
+
                 //Console.ReadLine();
             }
         }

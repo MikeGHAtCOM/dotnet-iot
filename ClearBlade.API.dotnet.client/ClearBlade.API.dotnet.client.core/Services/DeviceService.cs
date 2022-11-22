@@ -27,6 +27,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
             _logger = logger;
             _api = null;
             _adminSvc = adminSvc;
+            rkm = new RegistryKeyModel();
         }
 
         /// <summary>
@@ -115,17 +116,26 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns>List of Devices</returns>
         public async Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(int version, string parentPath)
         {
-            _logger.LogInformation("Getting devices list for parent {parentPath}.", parentPath);
-            if(_api == null)
-                return (false, new List<DeviceModel>());
-            var response = await _api.GetDevicesList(version, rkm.systemKey, parentPath);
-            if (response.IsSuccessStatusCode && response.Content != null)
+            try
             {
-                _logger.LogInformation("Found {y} devices", response.Content.devices.Count);
-                return (true, response.Content.devices);
+                _logger.LogInformation("Getting devices list for parent {parentPath}.", parentPath);
+                if (_api == null)
+                    return (false, new List<DeviceModel>());
+                var response = await _api.GetDevicesList(version, rkm.systemKey, parentPath);
+                if (response.IsSuccessStatusCode && response.Content != null)
+                {
+                    _logger.LogInformation("Found {y} devices", response.Content.devices.Count);
+                    return (true, response.Content.devices);
+                }
+                _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+                return (false, new List<DeviceModel>());
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee, "System Error while getting the device list. Message: ", ee.Message);
             }
 
-            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+            _logger.LogError("Error while getting the device list");
             return (false, new List<DeviceModel>());
         }
 
@@ -139,18 +149,25 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns>Success / Failure</returns>
         public async Task<bool> PostToDevice(int version, string deviceName, string methodName, object body)
         {
-            _logger.LogInformation("Calling {method} for device {name}.", methodName, deviceName);
-            if (_api == null)
-                return false;
-            var response = await _api.PostToDevice(version, rkm.systemKey, deviceName, methodName, body);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                _logger.LogInformation("Successfully completed calling method on device");
-                return true;
+                _logger.LogInformation("Calling {method} for device {name}.", methodName, deviceName);
+                if (_api == null)
+                    return false;
+                var response = await _api.PostToDevice(version, rkm.systemKey, deviceName, methodName, body);
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Successfully completed calling method on device");
+                    return true;
+                }
+                _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+                return false;
             }
-
-            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
-            return false;
+            catch (Exception ee)
+            {
+                _logger.LogError(ee, "System Error while posting to Device. Message: ", ee.Message);
+                return false;
+            }
         }
 
         /// <summary>
@@ -161,18 +178,27 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns>Device Model</returns>
         public async Task<(bool, DeviceCreateResponseModel?)> CreateDevice(int version, DeviceCreateModel deviceIn)
         {
-            _logger.LogInformation("Creating new device with id {id}.", deviceIn.id);
-            if (_api == null)
-                return (false, null);
-            var response = await _api.CreateDevice(version, rkm.systemKey, deviceIn);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                _logger.LogInformation("Successfully created the device");
-                return (true, response.Content);
-            }
+                _logger.LogInformation("Creating new device with id {id}.", deviceIn.id);
+                if (_api == null)
+                    return (false, null);
+                var response = await _api.CreateDevice(version, rkm.systemKey, deviceIn);
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Successfully created the device");
+                    return (true, response.Content);
+                }
 
-            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
-            return (false, null);
+                _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+                return (false, null);
+
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee, "System Error while creating a Device. Message: ", ee.Message);
+                return (false, null);
+            }
         }
 
         /// <summary>
@@ -183,18 +209,26 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns></returns>
         public async Task<(bool, int?)> DeleteDevice(int version, DeviceCreateModel deviceIn)
         {
-            _logger.LogInformation("Deleting device with id {id}.", deviceIn.id);
-            if (_api == null)
-                return (false, null);
-            var response = await _api.DeleteDevice(version, rkm.systemKey, deviceIn.name, deviceIn);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                _logger.LogInformation("Successfully deleted the device");
-                return (true, response.Content);
-            }
+                _logger.LogInformation("Deleting device with id {id}.", deviceIn.id);
+                if (_api == null)
+                    return (false, null);
+                var response = await _api.DeleteDevice(version, rkm.systemKey, deviceIn.name, deviceIn);
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Successfully deleted the device");
+                    return (true, response.Content);
+                }
 
-            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
-            return (false, null);
+                _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+                return (false, null);
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee, "System Error while deleting a Device. Message: ", ee.Message);
+                return (false, null);
+            }
         }
 
         /// <summary>
@@ -205,18 +239,27 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns>success / failure - Device Model</returns>
         public async Task<(bool, DeviceModel?)> GetDevice(int version, string deviceName)
         {
-            _logger.LogInformation("Get details of a device with name {name}.", deviceName);
-            if (_api == null)
-                return (false, null);
-            var response = await _api.GetDevice(version, rkm.systemKey, deviceName);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                _logger.LogInformation("Successfully obtained the device details");
-                return (true, response.Content);
-            }
+                _logger.LogInformation("Get details of a device with name {name}.", deviceName);
+                if (_api == null)
+                    return (false, null);
+                var response = await _api.GetDevice(version, rkm.systemKey, deviceName);
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Successfully obtained the device details");
+                    return (true, response.Content);
+                }
 
-            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
-            return (false, null);
+                _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+                return (false, null);
+
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee, "System Error while obtaining device details. Message: ", ee.Message);
+                return (false, null);
+            }
         }
 
         /// <summary>
@@ -228,18 +271,26 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns>success / failure - Device config Model</returns>
         public async Task<(bool, DeviceConfigResponseModel?)> GetDeviceConfig(int version, string deviceName, string localVersion)
         {
-            _logger.LogInformation("Get configuration details of a device with name {name}.", deviceName);
-            if (_api == null)
-                return (false, null);
-            var response = await _api.GetDeviceConfig(version, rkm.systemKey, deviceName, localVersion);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                _logger.LogInformation("Successfully obtained the device configuration details");
-                return (true, response.Content);
-            }
+                _logger.LogInformation("Get configuration details of a device with name {name}.", deviceName);
+                if (_api == null)
+                    return (false, null);
+                var response = await _api.GetDeviceConfig(version, rkm.systemKey, deviceName, localVersion);
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Successfully obtained the device configuration details");
+                    return (true, response.Content);
+                }
 
-            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
-            return (false, null);
+                _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+                return (false, null);
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee, "System Error while getting device configuration details. Message: ", ee.Message);
+                return (false, null);
+            }
         }
 
         /// <summary>
@@ -252,18 +303,26 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns>Success / Failure</returns>
         public async Task<bool> DeviceToGateway(int version, string parent, string methodName, DeviceToGatewayModel body)
         {
-            _logger.LogInformation("{methodName} - device with id {id} to / fro Gateway.", methodName, body.deviceId);
-            if (_api == null)
-                return false;
-            var response = await _api.DeviceToGateway(version, rkm.systemKey, parent, methodName, body);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                _logger.LogInformation("Successfully completed method {methodName}", methodName);
-                return true;
-            }
+                _logger.LogInformation("{methodName} - device with id {id} to / fro Gateway.", methodName, body.deviceId);
+                if (_api == null)
+                    return false;
+                var response = await _api.DeviceToGateway(version, rkm.systemKey, parent, methodName, body);
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Successfully completed method {methodName}", methodName);
+                    return true;
+                }
 
-            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
-            return false;
+                _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+                return false;
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee, "System Error while running device method. Message: ", ee.Message);
+                return false;
+            }
         }
 
         /// <summary>
@@ -274,18 +333,59 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns>Success / Failure and RegistryConfigModel</returns>
         public async Task<(bool, RegistryConfigModel?)> GetRegistryConfig(int version, string name)
         {
-            _logger.LogInformation("Get configuration details of a registry with name {name}.", name);
-            if (_api == null)
-                return (false, null);
-            var response = await _api.GetRegistryConfig(version, rkm.systemKey, name);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                _logger.LogInformation("Successfully obtained the registry configuration details");
-                return (true, response.Content);
-            }
+                _logger.LogInformation("Get configuration details of a registry with name {name}.", name);
+                if (_api == null)
+                    return (false, null);
+                var response = await _api.GetRegistryConfig(version, rkm.systemKey, name);
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Successfully obtained the registry configuration details");
+                    return (true, response.Content);
+                }
 
-            _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
-            return (false, null);
+                _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+                return (false, null);
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee, "System Error while getting registry configuration. Message: ", ee.Message);
+                return (false, null);
+            }
         }
+
+        /// <summary>
+        /// Api to update the reigstry configuration
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="registryName"></param>
+        /// <param name="updateMask"></param>
+        /// <param name="registryConfig"></param>
+        /// <returns>Success/Failure and RegistryConfigModel</returns>
+        public async Task<(bool, RegistryConfigModel?)> PatchRegistry(int version, string registryName, string updateMask, RegistryConfigModel registryConfig)
+        {
+            try
+            {
+                _logger.LogInformation("Update configuration details of a registry with name {name}.", registryName);
+                if (_api == null)
+                    return (false, null);
+                var response = await _api.PatchRegistry(version, rkm.systemKey, registryName, updateMask, registryConfig);
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Successfully updated the registry configuration details");
+                    return (true, response.Content);
+                }
+
+                _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+                return (false, null);
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee, "System Error while updating the registry configuration. Message: ", ee.Message);
+                return (false, null);
+            }
+        }
+
     }
 }
