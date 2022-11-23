@@ -29,12 +29,13 @@ namespace ClearBlade.API.dotnet.client
         static bool bTest009 = false;
         static bool bTest010 = false;
         static bool bTest011 = false;
+        static bool bTest012 = false;
         #endregion
 
         public static bool Execute(ServiceProvider serviceProvider, ILogger logger)
         {
             // Set which tests to run
-            // bTest011 = true;
+            // bTest012 = true;
             // bTest008 = true;
              //bTest007 = true;
             // bTest004 = true;
@@ -258,7 +259,7 @@ namespace ClearBlade.API.dotnet.client
                     }
                 }
 
-                // Test-007 - Get Device configuration details
+                // Test-007 - Create Device configuration details
                 if (bTest007 || bAllTests)
                 {
                     logger.LogInformation("Running Test-007 - Get Device");
@@ -417,6 +418,56 @@ namespace ClearBlade.API.dotnet.client
                                 logger.LogError("Test-011 - Failed");
                         }
                     }
+                }
+
+                // Test-012 - Get Device configuration versions list
+                if (bTest012 || bAllTests)
+                {
+                    logger.LogInformation("Running Test-012 - get Device configuration versions list");
+
+                    string deviceName = "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-012-Device";
+
+                    // First create a device to add config versions
+                    var resultPre = await mClient.CreateDevice(4, "Test-012-Device", deviceName);
+                    if (!resultPre.Item1 || (resultPre.Item2 == null))
+                        logger.LogError("Test-012 - Failed");
+
+                    // Next set some configuration information
+                    var data = new
+                    {
+                        binaryData = "QUJD",
+                        versionToUpdate = "1"
+                    };
+                    var resultPre1 = await mClient.ModifyCloudToDeviceConfig(4, deviceName, data);
+                    if (!resultPre1)
+                        logger.LogError("Test-012 - Failed - Failed while setting configuration");
+
+                    // Actual test
+                    var result012 = await mClient.GetDeviceConfigVersionList(4, deviceName, 5);
+                    if (!result012.Item1 || (result012.Item2 == null))
+                        logger.LogError("Test-012 - Failed to get Device configuration list");
+                    else
+                    {
+                        // Verify obtained data
+                        if(result012.Item2.deviceConfigs.Count != 2)
+                            logger.LogError("Test-012 - Failed to get Device configuration list");
+                        else
+                        {
+                            var firstConfig = result012.Item2.deviceConfigs.FirstOrDefault();
+                            if((firstConfig == null) || (firstConfig.version != "2")) // latest will be first
+                                logger.LogError("Test-012 - Failed to get Device configuration list");
+                            else
+                            {
+                                var secondConfig = result012.Item2.deviceConfigs.LastOrDefault();
+                                if ((secondConfig == null) || (secondConfig.version != "1")) // older will be next
+                                    logger.LogError("Test-012 - Failed to get Device configuration list");
+                                else
+                                    logger.LogInformation("Test-012 - Succeeded");
+                            }
+                        }                        
+                    }
+                    // Delete the newly created device - cleanup
+                    await mClient.DeleteDevice(4, "Test-012-Device", deviceName);
                 }
 
                 //Console.ReadLine();

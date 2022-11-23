@@ -105,5 +105,14 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="device"></param>
         /// <returns>Success/Failure and DeviceModel</returns>
         Task<(bool, DeviceModel?)> PatchDevice(int version, string deviceName, string updateMask, DeviceModel device);
+
+        /// <summary>
+        /// Api to get versions of configuration for a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="numVersions"></param>
+        /// <returns>Success/Failure and DeviceConfigVersions</returns>
+        Task<(bool, DeviceConfigVersions?)> GetDeviceConfigVersionList(int version, string deviceName, int numVersions);
     }
 }

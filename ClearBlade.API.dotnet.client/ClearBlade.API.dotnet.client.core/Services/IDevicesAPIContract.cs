@@ -120,5 +120,16 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns>DeviceModel</returns>
         [Patch("/api/v/{version}/webhook/execute/{admin_system_key}/cloudiot_devices")]
         Task<IApiResponse<DeviceModel>> PatchDevice(int version, string admin_system_key, [AliasAs("name")] string deviceName, [AliasAs("updateMask")] string updateMask, [Body] DeviceModel device);
+
+        /// <summary>
+        /// Api to get versions of configuration for a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="admin_system_key"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="numVersions"></param>
+        /// <returns>DeviceConfigVersions</returns>
+        [Get("/api/v/{version}/webhook/execute/{admin_system_key}/cloudiot_devices_configVersions")]
+        Task<IApiResponse<DeviceConfigVersions>> GetDeviceConfigVersionList(int version, string admin_system_key, [AliasAs("name")] string deviceName, [AliasAs("numVersions")] int numVersions);
     }
 }

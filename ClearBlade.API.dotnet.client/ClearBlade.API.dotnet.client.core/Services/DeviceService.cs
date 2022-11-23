@@ -418,5 +418,36 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 return (false, null);
             }
         }
+
+        /// <summary>
+        /// Api to get versions of configuration for a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="numVersions"></param>
+        /// <returns>Success/Failure and DeviceConfigVersions</returns>
+        public async Task<(bool, DeviceConfigVersions?)> GetDeviceConfigVersionList(int version, string deviceName, int numVersions)
+        {
+            try
+            {
+                _logger.LogInformation("Get configuration versions list of a device with name {name}.", deviceName);
+                if (_api == null)
+                    return (false, null);
+                var response = await _api.GetDeviceConfigVersionList(version, rkm.systemKey, deviceName, numVersions);
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Successfully obtained the device configuration versions list");
+                    return (true, response.Content);
+                }
+
+                _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+                return (false, null);
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee, "System Error while getting the device configuration versions. Message: ", ee.Message);
+                return (false, null);
+            }
+        }
     }
 }

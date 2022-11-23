@@ -25,15 +25,16 @@ namespace ClearBlade.API.dotnet.client
         static bool bGetDevice = false;
         static bool bGetDeviceConfig = false;
         static bool bBindUnBindDevice = false;
-        static bool bGetRegistryConfig= false;
-        static bool bPatchRegistryConfig= false;
-        static bool bPatchDeviceConfig= false;
+        static bool bGetRegistryConfig = false;
+        static bool bPatchRegistryConfig = false;
+        static bool bPatchDeviceConfig = false;
+        static bool bGetDeviceConfigVersions = false;
         #endregion
 
         public static bool Execute(ServiceProvider serviceProvider, ILogger logger)
         {
             // Set which sample to run
-            bPatchDeviceConfig = true;
+            bGetDeviceConfigVersions = true;
 
             logger.LogInformation("Running selected DotNet SDK samples");
 
@@ -307,9 +308,28 @@ namespace ClearBlade.API.dotnet.client
                     }
                 }
 
+                // Sample - Get list of configuration versions of a device
+                if (bGetDeviceConfigVersions)
+                {
+                    logger.LogInformation("Get configuration versions list for a device");
+
+                    // While running this sample, it is assumed that, device with name
+                    // "Sample-New-Device" exists
+
+                    string name = "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/devices/Sample-New-Device";
+
+                    var result = await mClient.GetDeviceConfigVersionList(4, name, 5);
+                    if (!result.Item1 || (result.Item2 == null))
+                        logger.LogError("Failed to get a device configuration");
+                    else
+                    {
+                        logger.LogInformation("Successfully obtained the list of device configuration versions");
+
+                        // Use the obtained information
+                    }
+                }
                 //Console.ReadLine();
             }
         }
-
     }
 }
