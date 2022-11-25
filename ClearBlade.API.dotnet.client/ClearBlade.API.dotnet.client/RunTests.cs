@@ -30,12 +30,13 @@ namespace ClearBlade.API.dotnet.client
         static bool bTest010 = false;
         static bool bTest011 = false;
         static bool bTest012 = false;
+        static bool bTest013 = false;
         #endregion
 
         public static bool Execute(ServiceProvider serviceProvider, ILogger logger)
         {
             // Set which tests to run
-            // bTest012 = true;
+            // bTest013 = true;
             // bTest008 = true;
              //bTest007 = true;
             // bTest004 = true;
@@ -468,6 +469,64 @@ namespace ClearBlade.API.dotnet.client
                     }
                     // Delete the newly created device - cleanup
                     await mClient.DeleteDevice(4, "Test-012-Device", deviceName);
+                }
+
+                // Test-013 - Get Device states list
+                if (bTest013 || bAllTests)
+                {
+                    logger.LogInformation("Running Test-013 - get Device states list");
+
+                    string deviceName = "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-013-Device";
+
+                    // First create a device to add config versions
+                    var resultPre = await mClient.CreateDevice(4, "Test-013-Device", deviceName);
+                    if (!resultPre.Item1 || (resultPre.Item2 == null))
+                        logger.LogError("Test-013 - Failed");
+
+                    // Next set some state information
+                    var data = new DeviceSetStateRequestModel
+                    {
+                        state = new DeviceStateModel { binaryData = "QUJD" }
+                    };
+                    var resultPre1 = await mClient.DeviceSetState(4, deviceName, data.state);
+                    if (!resultPre1)
+                        logger.LogError("Test-013 - Failed - Failed while setting state");
+
+                    // further set one more state
+                    data = new DeviceSetStateRequestModel
+                    {
+                        state = new DeviceStateModel { binaryData = "QUMP" }
+                    };
+                    var resultPre2 = await mClient.DeviceSetState(4, deviceName, data.state);
+                    if (!resultPre2)
+                        logger.LogError("Test-013 - Failed - Failed while setting state");
+
+                    // Actual test
+                    var result013 = await mClient.GetDeviceStateList(4, deviceName, 5);
+                    if (!result013.Item1 || (result013.Item2 == null))
+                        logger.LogError("Test-013 - Failed to get Device states list");
+                    else
+                    {
+                        // Verify obtained data
+                        if(result013.Item2.deviceStates.Count != 2)
+                            logger.LogError("Test-013 - Failed to get Device states list");
+                        else
+                        {
+                            var firstState = result013.Item2.deviceStates.FirstOrDefault();
+                            if((firstState == null) || (firstState.binaryData != "QUMP")) // latest will be first
+                                logger.LogError("Test-013 - Failed to get Device states list");
+                            else
+                            {
+                                var secondState = result013.Item2.deviceStates.LastOrDefault();
+                                if ((secondState == null) || (secondState.binaryData != "QUJD")) // older will be next
+                                    logger.LogError("Test-013 - Failed to get Device states list");
+                                else
+                                    logger.LogInformation("Test-013 - Succeeded");
+                            }
+                        }                        
+                    }
+                    // Delete the newly created device - cleanup
+                    await mClient.DeleteDevice(4, "Test-013-Device", deviceName);
                 }
 
                 //Console.ReadLine();

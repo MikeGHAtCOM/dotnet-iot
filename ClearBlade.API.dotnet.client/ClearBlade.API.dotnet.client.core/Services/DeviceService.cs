@@ -147,6 +147,37 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="methodName"></param>
         /// <param name="body"></param>
         /// <returns>Success / Failure</returns>
+        public async Task<bool> PostCommandToDevice(int version, string deviceName, string methodName, object body)
+        {
+            try
+            {
+                _logger.LogInformation("Calling {method} for device {name}.", methodName, deviceName);
+                if (_api == null)
+                    return false;
+                var response = await _api.PostCommandToDevice(version, rkm.systemKey, deviceName, methodName, body);
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Successfully completed calling method on device");
+                    return true;
+                }
+                _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+                return false;
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee, "System Error while posting command to Device. Message: ", ee.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// A generic api to call any post method related to Devices
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="methodName"></param>
+        /// <param name="body"></param>
+        /// <returns>Success / Failure</returns>
         public async Task<bool> PostToDevice(int version, string deviceName, string methodName, object body)
         {
             try
@@ -446,6 +477,37 @@ namespace ClearBlade.API.dotnet.client.core.Services
             catch (Exception ee)
             {
                 _logger.LogError(ee, "System Error while getting the device configuration versions. Message: ", ee.Message);
+                return (false, null);
+            }
+        }
+
+        /// <summary>
+        /// Api to get the list of states for a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="numStates"></param>
+        /// <returns>Success/Failure and DeviceStateList</returns>
+        public async Task<(bool, DeviceStateList?)> GetDeviceStateList(int version, string deviceName, int numStates)
+        {
+            try
+            {
+                _logger.LogInformation("Get states list of a device with name {name}.", deviceName);
+                if (_api == null)
+                    return (false, null);
+                var response = await _api.GetDeviceStateList(version, rkm.systemKey, deviceName, numStates);
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Successfully obtained the device states list");
+                    return (true, response.Content);
+                }
+
+                _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
+                return (false, null);
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee, "System Error while getting the device states. Message: ", ee.Message);
                 return (false, null);
             }
         }
