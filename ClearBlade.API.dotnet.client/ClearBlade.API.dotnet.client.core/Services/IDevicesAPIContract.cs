@@ -21,7 +21,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
         Task<IApiResponse<DeviceCollection>> GetDevicesList(int version, string system_key, [AliasAs("parent")] string parentPath);
 
         /// <summary>
-        /// A generic api to call any post method related to Devices
+        /// A generic api to post any command related to Devices
         /// </summary>
         /// <param name="version"></param>
         /// <param name="system_key"></param>
@@ -30,6 +30,18 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="body"></param>
         /// <returns>Success / Failure</returns>
         [Post("/api/v/{version}/webhook/execute/{system_key}/cloudiot_devices")]
+        Task<IApiResponse<bool>> PostCommandToDevice(int version, string system_key, [AliasAs("name")] string deviceName, [AliasAs("method")] string methodName, [Body] object body);
+
+        /// <summary>
+        /// A generic api to call any post method related to Devices
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="system_key"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="methodName"></param>
+        /// <param name="body"></param>
+        /// <returns>Success / Failure</returns>
+        [Post("/api/v/{version}/webhook/execute/{system_key}/cloudiotdevice_devices")]
         Task<IApiResponse<bool>> PostToDevice(int version, string system_key, [AliasAs("name")] string deviceName, [AliasAs("method")] string methodName, [Body] object body);
 
         /// <summary>
@@ -120,5 +132,27 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns>DeviceModel</returns>
         [Patch("/api/v/{version}/webhook/execute/{admin_system_key}/cloudiot_devices")]
         Task<IApiResponse<DeviceModel>> PatchDevice(int version, string admin_system_key, [AliasAs("name")] string deviceName, [AliasAs("updateMask")] string updateMask, [Body] DeviceModel device);
+
+        /// <summary>
+        /// Api to get versions of configuration for a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="admin_system_key"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="numVersions"></param>
+        /// <returns>DeviceConfigVersions</returns>
+        [Get("/api/v/{version}/webhook/execute/{admin_system_key}/cloudiot_devices_configVersions")]
+        Task<IApiResponse<DeviceConfigVersions>> GetDeviceConfigVersionList(int version, string admin_system_key, [AliasAs("name")] string deviceName, [AliasAs("numVersions")] int numVersions);
+
+        /// <summary>
+        /// Api to get the list of states for a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="admin_system_key"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="numStates"></param>
+        /// <returns>DeviceStateList</returns>
+        [Get("/api/v/{version}/webhook/execute/{admin_system_key}/cloudiot_devices_states")]
+        Task<IApiResponse<DeviceStateList>> GetDeviceStateList(int version, string admin_system_key, [AliasAs("name")] string deviceName, [AliasAs("numStates")] int numStates);
     }
 }

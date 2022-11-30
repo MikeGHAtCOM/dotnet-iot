@@ -46,7 +46,7 @@ namespace ClearBlade.API.dotnet.client.core
             if(!await _deviceSvc.Initialize(deviceName))
                 return false;
 
-            return await _deviceSvc.PostToDevice(version, deviceName, "sendCommandToDevice", body);
+            return await _deviceSvc.PostCommandToDevice(version, deviceName, "sendCommandToDevice", body);
         }
 
         /// <summary>
@@ -55,14 +55,30 @@ namespace ClearBlade.API.dotnet.client.core
         /// <param name="version"></param>
         /// <param name="deviceName"></param>
         /// <param name="body"></param>
-        /// <returns></returns>
+        /// <returns>Success / Failure</returns>
         public async Task<bool> ModifyCloudToDeviceConfig(int version, string deviceName, object body)
         {
             // Initialize the service
             if (!await _deviceSvc.Initialize(deviceName))
                 return false;
 
-            return await _deviceSvc.PostToDevice(version, deviceName, "modifyCloudToDeviceConfig", body);
+            return await _deviceSvc.PostCommandToDevice(version, deviceName, "modifyCloudToDeviceConfig", body);
+        }
+
+        /// <summary>
+        /// Helper class method to set state for a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="body"></param>
+        /// <returns>Success / Failure</returns>
+        public async Task<bool> DeviceSetState(int version, string deviceName, object body)
+        {
+            // Initialize the service
+            if(!await _deviceSvc.Initialize(deviceName))
+                return false;
+
+            return await _deviceSvc.PostToDevice(version, deviceName, "setState", body);
         }
 
         /// <summary>
@@ -226,6 +242,38 @@ namespace ClearBlade.API.dotnet.client.core
                 return (false, null);
 
             return await _deviceSvc.PatchDevice(version, name, updateMask, deviceConfig);
+        }
+
+        /// <summary>
+        /// Helper class method to get device configuration versions
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="name"></param>
+        /// <param name="numVersions"></param>
+        /// <returns>Success / Failure and DeviceConfigVersions</returns>
+        public async Task<(bool, DeviceConfigVersions?)> GetDeviceConfigVersionList(int version, string name, int numVersions)
+        {
+            // Initialize the service
+            if (!await _deviceSvc.Initialize(name))
+                return (false, null);
+
+            return await _deviceSvc.GetDeviceConfigVersionList(version, name, numVersions);
+        }
+
+        /// <summary>
+        /// Helper class method to get device states list
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="name"></param>
+        /// <param name="numStates"></param>
+        /// <returns>Success/Failure and DeviceStateList</returns>
+        public async Task<(bool, DeviceStateList?)> GetDeviceStateList(int version, string name, int numStates)
+        {
+            // Initialize the service
+            if (!await _deviceSvc.Initialize(name))
+                return (false, null);
+
+            return await _deviceSvc.GetDeviceStateList(version, name, numStates);
         }
     }
 }

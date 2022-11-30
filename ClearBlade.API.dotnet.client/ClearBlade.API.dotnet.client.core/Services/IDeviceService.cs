@@ -36,6 +36,15 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="methodName"></param>
         /// <param name="body"></param>
         /// <returns>Success / Failure</returns>
+        Task<bool> PostCommandToDevice(int version, string deviceName, string methodName, object body);
+        /// <summary>
+        /// A generic api to call any post method related to Devices
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="methodName"></param>
+        /// <param name="body"></param>
+        /// <returns>Success / Failure</returns>
         Task<bool> PostToDevice(int version, string deviceName, string methodName, object body);
         /// <summary>
         /// Api to create new device
@@ -105,5 +114,23 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="device"></param>
         /// <returns>Success/Failure and DeviceModel</returns>
         Task<(bool, DeviceModel?)> PatchDevice(int version, string deviceName, string updateMask, DeviceModel device);
+
+        /// <summary>
+        /// Api to get versions of configuration for a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="numVersions"></param>
+        /// <returns>Success/Failure and DeviceConfigVersions</returns>
+        Task<(bool, DeviceConfigVersions?)> GetDeviceConfigVersionList(int version, string deviceName, int numVersions);
+
+        /// <summary>
+        /// Api to get the list of states for a device
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="deviceName"></param>
+        /// <param name="numStates"></param>
+        /// <returns>Success/Failure and DeviceStateList</returns>
+        Task<(bool, DeviceStateList?)> GetDeviceStateList(int version, string deviceName, int numStates);
     }
 }
