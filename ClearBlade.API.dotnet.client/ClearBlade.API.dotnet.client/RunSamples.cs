@@ -35,7 +35,7 @@ namespace ClearBlade.API.dotnet.client
         public static bool Execute(ServiceProvider serviceProvider, ILogger logger)
         {
             // Set which sample to run
-            bGetDeviceStates = true;
+            // bGetDeviceStates = true;
 
             logger.LogInformation("Running selected DotNet SDK samples");
 

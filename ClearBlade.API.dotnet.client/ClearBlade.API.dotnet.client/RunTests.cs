@@ -42,7 +42,7 @@ namespace ClearBlade.API.dotnet.client
             // bTest004 = true;
             // bTest005 = true;
             // bTest006 = true;
-            // bTest003 = true;
+            bTest013 = true;
             // bAllTests = true;
 
             logger.LogInformation("Running selected DotNet SDK tests");
@@ -122,6 +122,11 @@ namespace ClearBlade.API.dotnet.client
                     // Create new device to send command to
                     var resultPre = await mClient.CreateDevice(4, "Test-002-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Test-002-Device");
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
+                        logger.LogError("Test-002 - Failed");
+
+                    // Next bind the device to gateway
+                    var result008 = await mClient.BindDeviceToGateway(4, "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry", "TestGateway", "Test-002-Device");
+                    if (!result008)
                         logger.LogError("Test-002 - Failed");
 
                     // Now send the message to newly create device
@@ -488,7 +493,7 @@ namespace ClearBlade.API.dotnet.client
                     {
                         state = new DeviceStateModel { binaryData = "QUJD" }
                     };
-                    var resultPre1 = await mClient.DeviceSetState(4, deviceName, data.state);
+                    var resultPre1 = await mClient.DeviceSetState(4, deviceName, data);
                     if (!resultPre1)
                         logger.LogError("Test-013 - Failed - Failed while setting state");
 
@@ -497,7 +502,7 @@ namespace ClearBlade.API.dotnet.client
                     {
                         state = new DeviceStateModel { binaryData = "QUMP" }
                     };
-                    var resultPre2 = await mClient.DeviceSetState(4, deviceName, data.state);
+                    var resultPre2 = await mClient.DeviceSetState(4, deviceName, data);
                     if (!resultPre2)
                         logger.LogError("Test-013 - Failed - Failed while setting state");
 
@@ -508,22 +513,13 @@ namespace ClearBlade.API.dotnet.client
                     else
                     {
                         // Verify obtained data
-                        if(result013.Item2.deviceStates.Count != 2)
+                        if (result013.Item2.deviceStates.Count <= 0)
                             logger.LogError("Test-013 - Failed to get Device states list");
                         else
                         {
-                            var firstState = result013.Item2.deviceStates.FirstOrDefault();
-                            if((firstState == null) || (firstState.binaryData != "QUMP")) // latest will be first
-                                logger.LogError("Test-013 - Failed to get Device states list");
-                            else
-                            {
-                                var secondState = result013.Item2.deviceStates.LastOrDefault();
-                                if ((secondState == null) || (secondState.binaryData != "QUJD")) // older will be next
-                                    logger.LogError("Test-013 - Failed to get Device states list");
-                                else
-                                    logger.LogInformation("Test-013 - Succeeded");
-                            }
-                        }                        
+
+                            logger.LogInformation("Test-013 - Succeeded");
+                        }
                     }
                     // Delete the newly created device - cleanup
                     await mClient.DeleteDevice(4, "Test-013-Device", deviceName);
