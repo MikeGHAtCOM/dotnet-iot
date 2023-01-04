@@ -1,42 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ClearBlade.API.dotnet.client.core.Models
+﻿namespace ClearBlade.API.dotnet.client.core.Models
 {
     // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
     public class Config
     {
-        public DateTime cloudUpdateTime { get; set; }
-        public string version { get; set; }
+        public DateTime CloudUpdateTime { get; set; }
+        public string Version { get; set; }
 
         public Config()
         {
-            version = String.Empty;
+            Version = String.Empty;
         }
     }
 
     public class Credential
     {
-        public string expirationTime { get; set; }
-        public PublicKey publicKey { get; set; }
+        public string ExpirationTime { get; set; }
+        public PublicKey PublicKey { get; set; }
 
         public Credential()
         {
-            expirationTime = String.Empty;
-            publicKey = new PublicKey();
+            ExpirationTime = String.Empty;
+            PublicKey = new PublicKey();
         }
     }
 
     public class DeviceCollection
     {
-        public List<DeviceModel> devices { get; set; }
+        public List<DeviceModel> Devices { get; set; }
 
         public DeviceCollection()
         {
-            devices = new List<DeviceModel>();
+            Devices = new List<DeviceModel>();
         }
     }
 
@@ -45,42 +39,42 @@ namespace ClearBlade.API.dotnet.client.core.Models
     /// </summary>
     public class DeviceModel
     {
-        public string id { get; set; }
-        public string name { get; set; }
-        public string numId { get; set; }
-        public List<Credential> credentials { get; set; }
-        public string lastHeartbeatTime { get; set; }
-        public string lastEventTime { get; set; }
-        public string lastStateTime { get; set; }
-        public string lastConfigAckTime { get; set; }
-        public string lastConfigSendTime { get; set; }
-        public bool blocked { get; set; }
-        public string lastErrorTime { get; set; }
-        public LastErrorStatus lastErrorStatus { get; set; }
-        public Config config { get; set; }
-        public State state { get; set; }
-        public string logLevel { get; set; }
-        public Metadata metadata { get; set; }
-        public GatewayConfig gatewayConfig { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string NumId { get; set; }
+        public List<Credential> Credentials { get; set; }
+        public string LastHeartbeatTime { get; set; }
+        public string LastEventTime { get; set; }
+        public string LastStateTime { get; set; }
+        public string LastConfigAckTime { get; set; }
+        public string LastConfigSendTime { get; set; }
+        public bool Blocked { get; set; }
+        public string LastErrorTime { get; set; }
+        public LastErrorStatus LastErrorStatus { get; set; }
+        public Config Config { get; set; }
+        public State State { get; set; }
+        public string LogLevel { get; set; }
+        public Metadata Metadata { get; set; }
+        public GatewayConfig GatewayConfig { get; set; }
 
         public DeviceModel()
         {
-            id = string.Empty;
-            name = string.Empty;
-            numId = string.Empty;
-            credentials = new List<Credential>();
-            lastHeartbeatTime = string.Empty;
-            lastEventTime = string.Empty;
-            lastStateTime = string.Empty;
-            lastConfigAckTime = string.Empty;
-            lastConfigSendTime = string.Empty;
-            lastErrorTime = string.Empty;
-            lastErrorStatus = new LastErrorStatus();
-            config = new Config();
-            state = new State();
-            logLevel = "NONE";
-            metadata = new Metadata();
-            gatewayConfig = new GatewayConfig();
+            Id = string.Empty;
+            Name = string.Empty;
+            NumId = string.Empty;
+            Credentials = new List<Credential>();
+            LastHeartbeatTime = string.Empty;
+            LastEventTime = string.Empty;
+            LastStateTime = string.Empty;
+            LastConfigAckTime = string.Empty;
+            LastConfigSendTime = string.Empty;
+            LastErrorTime = string.Empty;
+            LastErrorStatus = new LastErrorStatus();
+            Config = new Config();
+            State = new State();
+            LogLevel = "NONE";
+            Metadata = new Metadata();
+            GatewayConfig = new GatewayConfig();
         }
     }
 

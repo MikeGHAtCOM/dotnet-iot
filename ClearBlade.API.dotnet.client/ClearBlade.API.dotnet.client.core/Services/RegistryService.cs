@@ -47,11 +47,11 @@ namespace ClearBlade.API.dotnet.client.core.Services
                     return false;
                 }
 
-                HttpLoggingHandler handler = new HttpLoggingHandler(_accountDetails.token);
-                string baseUrl = _accountDetails.url;
+                HttpLoggingHandler handler = new HttpLoggingHandler(_accountDetails.Token);
+                string baseUrl = _accountDetails.Url;
                 _api = RestService.For<IRegistryServiceContract>(new HttpClient(handler)
                 {
-                    BaseAddress = new Uri(_accountDetails.url)
+                    BaseAddress = new Uri(_accountDetails.Url)
                 });
             }
             catch (Exception ee)
@@ -78,7 +78,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 if (!Initialize() || (_accountDetails == null) || (_api == null))
                     return (false, null);
 
-                var response = await _api.CreateRegistry(version, _accountDetails.systemKey, parentPath, registryConfigModel);
+                var response = await _api.CreateRegistry(version, _accountDetails.SystemKey, parentPath, registryConfigModel);
                 if (response.IsSuccessStatusCode && response.Content != null)
                 {
                     _logger.LogInformation("Successfully created registry", response.Content);
@@ -108,7 +108,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 if (!Initialize() || (_accountDetails == null) || (_api == null))
                     return false;
 
-                var response = await _api.DeleteRegistry(version, _accountDetails.systemKey, registryName);
+                var response = await _api.DeleteRegistry(version, _accountDetails.SystemKey, registryName);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Successfully deleted registry");

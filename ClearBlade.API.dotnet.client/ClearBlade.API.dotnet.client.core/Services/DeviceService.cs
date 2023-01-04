@@ -63,17 +63,17 @@ namespace ClearBlade.API.dotnet.client.core.Services
                     if(string.Compare(vs[i], "projects",true) == 0)
                     {
                         i++; // Next item in array will be 
-                        rm.project = vs[i];
+                        rm.Project = vs[i];
                     }
                     if (string.Compare(vs[i], "locations", true) == 0)
                     {
                         i++; // Next item in array will be 
-                        rm.region = vs[i];
+                        rm.Region = vs[i];
                     }
                     if (string.Compare(vs[i], "registries", true) == 0)
                     {
                         i++; // Next item in array will be 
-                        rm.registry = vs[i];
+                        rm.Registry = vs[i];
                     }
                 }
 
@@ -84,7 +84,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
 
                 rkm = rmKeyRes.Item2;
 
-                HttpLoggingHandler handler = new HttpLoggingHandler(rkm.serviceAccountToken);
+                HttpLoggingHandler handler = new HttpLoggingHandler(rkm.ServiceAccountToken);
                 string baseUrl = rkm.url;
                 _api = RestService.For<IDevicesApiContract>(new HttpClient(handler)
                 {
@@ -121,11 +121,11 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 _logger.LogInformation("Getting devices list for parent {parentPath}.", parentPath);
                 if (_api == null)
                     return (false, new List<DeviceModel>());
-                var response = await _api.GetDevicesList(version, rkm.systemKey, parentPath);
+                var response = await _api.GetDevicesList(version, rkm.SystemKey, parentPath);
                 if (response.IsSuccessStatusCode && response.Content != null)
                 {
-                    _logger.LogInformation("Found {y} devices", response.Content.devices.Count);
-                    return (true, response.Content.devices);
+                    _logger.LogInformation("Found {y} devices", response.Content.Devices.Count);
+                    return (true, response.Content.Devices);
                 }
                 _logger.LogError(response.Error, "Reason: {ReasonPhrase}, Error {error}", response.ReasonPhrase, (response.Error == null) ? "" : response.Error.Content);
                 return (false, new List<DeviceModel>());
@@ -154,7 +154,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 _logger.LogInformation("Calling {method} for device {name}.", methodName, deviceName);
                 if (_api == null)
                     return false;
-                var response = await _api.PostCommandToDevice(version, rkm.systemKey, deviceName, methodName, body);
+                var response = await _api.PostCommandToDevice(version, rkm.SystemKey, deviceName, methodName, body);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Successfully completed calling method on device");
@@ -185,7 +185,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 _logger.LogInformation("Calling {method} for device {name}.", methodName, deviceName);
                 if (_api == null)
                     return false;
-                var response = await _api.PostToDevice(version, rkm.systemKey, deviceName, methodName, body);
+                var response = await _api.PostToDevice(version, rkm.SystemKey, deviceName, methodName, body);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Successfully completed calling method on device");
@@ -211,10 +211,10 @@ namespace ClearBlade.API.dotnet.client.core.Services
         {
             try
             {
-                _logger.LogInformation("Creating new device with id {id}.", deviceIn.id);
+                _logger.LogInformation("Creating new device with id {id}.", deviceIn.Id);
                 if (_api == null)
                     return (false, null);
-                var response = await _api.CreateDevice(version, rkm.systemKey, deviceIn);
+                var response = await _api.CreateDevice(version, rkm.SystemKey, deviceIn);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Successfully created the device");
@@ -242,10 +242,10 @@ namespace ClearBlade.API.dotnet.client.core.Services
         {
             try
             {
-                _logger.LogInformation("Deleting device with id {id}.", deviceIn.id);
+                _logger.LogInformation("Deleting device with id {id}.", deviceIn.Id);
                 if (_api == null)
                     return (false, null);
-                var response = await _api.DeleteDevice(version, rkm.systemKey, deviceIn.name, deviceIn);
+                var response = await _api.DeleteDevice(version, rkm.SystemKey, deviceIn.Name, deviceIn);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Successfully deleted the device");
@@ -275,7 +275,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 _logger.LogInformation("Get details of a device with name {name}.", deviceName);
                 if (_api == null)
                     return (false, null);
-                var response = await _api.GetDevice(version, rkm.systemKey, deviceName);
+                var response = await _api.GetDevice(version, rkm.SystemKey, deviceName);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Successfully obtained the device details");
@@ -307,7 +307,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 _logger.LogInformation("Get configuration details of a device with name {name}.", deviceName);
                 if (_api == null)
                     return (false, null);
-                var response = await _api.GetDeviceConfig(version, rkm.systemKey, deviceName, localVersion);
+                var response = await _api.GetDeviceConfig(version, rkm.SystemKey, deviceName, localVersion);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Successfully obtained the device configuration details");
@@ -336,10 +336,10 @@ namespace ClearBlade.API.dotnet.client.core.Services
         {
             try
             {
-                _logger.LogInformation("{methodName} - device with id {id} to / fro Gateway.", methodName, body.deviceId);
+                _logger.LogInformation("{methodName} - device with id {id} to / fro Gateway.", methodName, body.DeviceId);
                 if (_api == null)
                     return false;
-                var response = await _api.DeviceToGateway(version, rkm.systemKey, parent, methodName, body);
+                var response = await _api.DeviceToGateway(version, rkm.SystemKey, parent, methodName, body);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Successfully completed method {methodName}", methodName);
@@ -369,7 +369,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 _logger.LogInformation("Get configuration details of a registry with name {name}.", name);
                 if (_api == null)
                     return (false, null);
-                var response = await _api.GetRegistryConfig(version, rkm.systemKey, name);
+                var response = await _api.GetRegistryConfig(version, rkm.SystemKey, name);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Successfully obtained the registry configuration details");
@@ -401,7 +401,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 _logger.LogInformation("Update configuration details of a registry with name {name}.", registryName);
                 if (_api == null)
                     return (false, null);
-                var response = await _api.PatchRegistry(version, rkm.systemKey, registryName, updateMask, registryConfig);
+                var response = await _api.PatchRegistry(version, rkm.SystemKey, registryName, updateMask, registryConfig);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Successfully updated the registry configuration details");
@@ -433,7 +433,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 _logger.LogInformation("Update configuration details of a device with name {name}.", deviceName);
                 if (_api == null)
                     return (false, null);
-                var response = await _api.PatchDevice(version, rkm.systemKey, deviceName, updateMask, deviceConfig);
+                var response = await _api.PatchDevice(version, rkm.SystemKey, deviceName, updateMask, deviceConfig);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Successfully updated the device configuration details");
@@ -464,7 +464,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 _logger.LogInformation("Get configuration versions list of a device with name {name}.", deviceName);
                 if (_api == null)
                     return (false, null);
-                var response = await _api.GetDeviceConfigVersionList(version, rkm.systemKey, deviceName, numVersions);
+                var response = await _api.GetDeviceConfigVersionList(version, rkm.SystemKey, deviceName, numVersions);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Successfully obtained the device configuration versions list");
@@ -495,7 +495,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 _logger.LogInformation("Get states list of a device with name {name}.", deviceName);
                 if (_api == null)
                     return (false, null);
-                var response = await _api.GetDeviceStateList(version, rkm.systemKey, deviceName, numStates);
+                var response = await _api.GetDeviceStateList(version, rkm.SystemKey, deviceName, numStates);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Successfully obtained the device states list");

@@ -262,8 +262,8 @@ namespace ClearBlade.API.dotnet.client
                         // logLevel
                         // credentials
                         string updateMask = "httpConfig.http_enabled_state,mqttConfig.mqtt_enabled_state";
-                        result.Item2.mqttConfig.mqttEnabledState = "MQTT_ENABLED";
-                        result.Item2.httpConfig.httpEnabledState = "HTTP_ENABLED";
+                        result.Item2.MqttConfig.MqttEnabledState = "MQTT_ENABLED";
+                        result.Item2.HttpConfig.HttpEnabledState = "HTTP_ENABLED";
 
                         result = await mClient.PatchRegistry(4, name, updateMask, result.Item2);
 
@@ -292,10 +292,10 @@ namespace ClearBlade.API.dotnet.client
                         // Use the obtained information
                         string updateMask = "metadata";
                         string pubKey = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5P0Z4OUD5PSjri8xexGo\n6eQ39NGyQbXamIgWAwvnAs/oDRVqEejE2nwDhnpykaCGLkuDEN0LPd2wF+vC2Cq3\nY3YvkJh71IkjuAjMZQ+00CXdezfCjmTtEpMCNA3cV+G1g6uIcdEpHKs0YHfC9CFQ\nrjkc7tl3idmcQLngIov/gsFY7D1pbOgkCVVcZCRLgsdFfhCUYwYCvdEVJP3w+5mG\nybvmhNRbbFG7eG3+hmZoOg0h3f6r2fqgSx6l0+Z3D77SRT6lBEHvGDlxb08ASeuE\n0SJAc6PdAKd3FDqdZok4z1qJsgMqtU/ZGJJG54pNECWmhoOar+aQmmqnZ6kGQ5cn\nEwIDAQAB\n-----END PUBLIC KEY-----\n";
-                        result.Item2.credentials.Add(new core.Models.Credential
+                        result.Item2.Credentials.Add(new core.Models.Credential
                         {
-                            expirationTime = "",
-                            publicKey = new PublicKey
+                            ExpirationTime = "",
+                            PublicKey = new PublicKey
                             {
                                 format = "RSA_PEM",
                                 key = pubKey

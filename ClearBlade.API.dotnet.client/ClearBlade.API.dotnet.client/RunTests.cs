@@ -91,7 +91,7 @@ namespace ClearBlade.API.dotnet.client
 
                             foreach (var deviceItem in result.Item2)
                             {
-                                if(string.Compare(deviceItem.name, "Test-001-Device", true) == 0)
+                                if(string.Compare(deviceItem.Name, "Test-001-Device", true) == 0)
                                 {
                                     bSuccess = true;
                                     break;
@@ -191,7 +191,7 @@ namespace ClearBlade.API.dotnet.client
 
                             foreach (var deviceItem in result.Item2)
                             {
-                                if (string.Compare(deviceItem.name, "Test-004-Device", true) == 0)
+                                if (string.Compare(deviceItem.Name, "Test-004-Device", true) == 0)
                                 {
                                     bSuccess = true;
                                     break;
@@ -254,7 +254,7 @@ namespace ClearBlade.API.dotnet.client
                         logger.LogError("Test-006 - Failed");
                     else
                     {
-                        if(string.Compare(result006.Item2.name, "Test-006-Device", true) == 0)
+                        if(string.Compare(result006.Item2.Name, "Test-006-Device", true) == 0)
                             logger.LogInformation("Test-006 - Succeeded");
                         else
                             logger.LogError("Test-006 - Failed");
@@ -291,7 +291,7 @@ namespace ClearBlade.API.dotnet.client
                         logger.LogError("Test-007 - Failed");
                     else
                     {
-                        if (string.Compare(result007.Item2.binaryData, "QUJD", true) == 0)
+                        if (string.Compare(result007.Item2.BinaryData, "QUJD", true) == 0)
                             logger.LogInformation("Test-007 - Succeeded");
                         else
                             logger.LogError("Test-007 - Failed");
@@ -340,7 +340,7 @@ namespace ClearBlade.API.dotnet.client
                         logger.LogError("Test-009 - Failed");
                     else
                     {
-                        if (string.Compare(result009.Item2.id, "Sample-New-Registry", true) == 0)
+                        if (string.Compare(result009.Item2.Id, "Sample-New-Registry", true) == 0)
                             logger.LogInformation("Test-009 - Succeeded");
                         else
                             logger.LogError("Test-009 - Failed");
@@ -361,17 +361,17 @@ namespace ClearBlade.API.dotnet.client
                     else
                     {
                         string updateMask = "httpConfig.http_enabled_state,mqttConfig.mqtt_enabled_state";
-                        resultPre.Item2.mqttConfig.mqttEnabledState = "MQTT_ENABLED";
-                        resultPre.Item2.httpConfig.httpEnabledState = "HTTP_ENABLED";
+                        resultPre.Item2.MqttConfig.MqttEnabledState = "MQTT_ENABLED";
+                        resultPre.Item2.HttpConfig.HttpEnabledState = "HTTP_ENABLED";
 
                         var result010 = await mClient.PatchRegistry(4, regName, updateMask, resultPre.Item2);
                         if (!result010.Item1 || (result010.Item2 == null))
                             logger.LogError("Test-010 - Failed to update Registry configuration");
                         else
                         {
-                            if ((string.Compare(result010.Item2.id, "Sample-New-Registry", true) == 0) &&
-                                (string.Compare(result010.Item2.mqttConfig.mqttEnabledState, "MQTT_ENABLED", true) == 0) &&
-                                (string.Compare(result010.Item2.httpConfig.httpEnabledState, "HTTP_ENABLED", true) == 0))
+                            if ((string.Compare(result010.Item2.Id, "Sample-New-Registry", true) == 0) &&
+                                (string.Compare(result010.Item2.MqttConfig.MqttEnabledState, "MQTT_ENABLED", true) == 0) &&
+                                (string.Compare(result010.Item2.HttpConfig.HttpEnabledState, "HTTP_ENABLED", true) == 0))
                                 logger.LogInformation("Test-010 - Succeeded");
                             else
                                 logger.LogError("Test-010 - Failed");
@@ -394,10 +394,10 @@ namespace ClearBlade.API.dotnet.client
                     {
                         string updateMask = "metadata";
                         string pubKey = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5P0Z4OUD5PSjri8xexGo\n6eQ39NGyQbXamIgWAwvnAs/oDRVqEejE2nwDhnpykaCGLkuDEN0LPd2wF+vC2Cq3\nY3YvkJh71IkjuAjMZQ+00CXdezfCjmTtEpMCNA3cV+G1g6uIcdEpHKs0YHfC9CFQ\nrjkc7tl3idmcQLngIov/gsFY7D1pbOgkCVVcZCRLgsdFfhCUYwYCvdEVJP3w+5mG\nybvmhNRbbFG7eG3+hmZoOg0h3f6r2fqgSx6l0+Z3D77SRT6lBEHvGDlxb08ASeuE\n0SJAc6PdAKd3FDqdZok4z1qJsgMqtU/ZGJJG54pNECWmhoOar+aQmmqnZ6kGQ5cn\nEwIDAQAB\n-----END PUBLIC KEY-----\n";
-                        resultPre.Item2.credentials.Add(new core.Models.Credential
+                        resultPre.Item2.Credentials.Add(new core.Models.Credential
                         {
-                            expirationTime = "",
-                            publicKey = new PublicKey
+                            ExpirationTime = "",
+                            PublicKey = new PublicKey
                             {
                                 format = "RSA_PEM",
                                 key = pubKey
@@ -410,14 +410,14 @@ namespace ClearBlade.API.dotnet.client
                         else
                         {
                             string resPubKey = string.Empty;
-                            if ((result011.Item2 != null) && result011.Item2.credentials.Count > 0 && result011.Item2.credentials.FirstOrDefault() != null)
+                            if ((result011.Item2 != null) && result011.Item2.Credentials.Count > 0 && result011.Item2.Credentials.FirstOrDefault() != null)
                             {
-                                foreach (var item in result011.Item2.credentials)
+                                foreach (var item in result011.Item2.Credentials)
                                 {
-                                    resPubKey = item.publicKey.key;
+                                    resPubKey = item.PublicKey.key;
                                 }
                             }
-                            if ((string.Compare(result011.Item2?.id, "Sample-New-Device", true) == 0) &&
+                            if ((string.Compare(result011.Item2?.Id, "Sample-New-Device", true) == 0) &&
                             (string.Compare(resPubKey, pubKey, true) == 0))
                                 logger.LogInformation("Test-011 - Succeeded");
                             else
@@ -460,12 +460,12 @@ namespace ClearBlade.API.dotnet.client
                         else
                         {
                             var firstConfig = result012.Item2.deviceConfigs.FirstOrDefault();
-                            if((firstConfig == null) || (firstConfig.version != "2")) // latest will be first
+                            if((firstConfig == null) || (firstConfig.Version != "2")) // latest will be first
                                 logger.LogError("Test-012 - Failed to get Device configuration list");
                             else
                             {
                                 var secondConfig = result012.Item2.deviceConfigs.LastOrDefault();
-                                if ((secondConfig == null) || (secondConfig.version != "1")) // older will be next
+                                if ((secondConfig == null) || (secondConfig.Version != "1")) // older will be next
                                     logger.LogError("Test-012 - Failed to get Device configuration list");
                                 else
                                     logger.LogInformation("Test-012 - Succeeded");
@@ -491,7 +491,7 @@ namespace ClearBlade.API.dotnet.client
                     // Next set some state information
                     var data = new DeviceSetStateRequestModel
                     {
-                        state = new DeviceStateModel { binaryData = "QUJD" }
+                        State = new DeviceStateModel { BinaryData = "QUJD" }
                     };
                     var resultPre1 = await mClient.DeviceSetState(4, deviceName, data);
                     if (!resultPre1)
@@ -500,7 +500,7 @@ namespace ClearBlade.API.dotnet.client
                     // further set one more state
                     data = new DeviceSetStateRequestModel
                     {
-                        state = new DeviceStateModel { binaryData = "QUMP" }
+                        State = new DeviceStateModel { BinaryData = "QUMP" }
                     };
                     var resultPre2 = await mClient.DeviceSetState(4, deviceName, data);
                     if (!resultPre2)
@@ -513,7 +513,7 @@ namespace ClearBlade.API.dotnet.client
                     else
                     {
                         // Verify obtained data
-                        if (result013.Item2.deviceStates.Count <= 0)
+                        if (result013.Item2.DeviceStates.Count <= 0)
                             logger.LogError("Test-013 - Failed to get Device states list");
                         else
                         {

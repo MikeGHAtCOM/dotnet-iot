@@ -1,29 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ClearBlade.API.dotnet.client.core.Models
+﻿namespace ClearBlade.API.dotnet.client.core.Models
 {
     public class RegistryModel
     {
-        public string region { get; set; }
-        public string registry { get; set; }
-        public string project { get; set; }
+        public string Region { get; set; }
+        public string Registry { get; set; }
+        public string Project { get; set; }
 
         public RegistryModel()
         {
-            region = string.Empty;
-            registry = string.Empty;
-            project = string.Empty;
+            Region = string.Empty;
+            Registry = string.Empty;
+            Project = string.Empty;
         }
 
         public RegistryModel(string regionIn, string registryIn, string projectIn)
         {
-            region = regionIn;
-            registry = registryIn;
-            project = projectIn;
+            Region = regionIn;
+            Registry = registryIn;
+            Project = projectIn;
         }
     }
 }

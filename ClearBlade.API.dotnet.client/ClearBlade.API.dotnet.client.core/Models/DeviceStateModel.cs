@@ -1,28 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ClearBlade.API.dotnet.client.core.Models
+﻿namespace ClearBlade.API.dotnet.client.core.Models
 {
     public class DeviceStateModel
     {
-        public string binaryData { get; set; }
+        public string BinaryData { get; set; }
 
         public DeviceStateModel()
         {
-            binaryData = string.Empty;
+            BinaryData = string.Empty;
         }
     }
 
     public class DeviceStateList
     {
-        public List<DeviceStateModel> deviceStates { get; set; }
+        public List<DeviceStateModel> DeviceStates { get; set; }
 
         public DeviceStateList()
         {
-            deviceStates = new List<DeviceStateModel>();
+            DeviceStates = new List<DeviceStateModel>();
         }
     }
 }

@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ClearBlade.API.dotnet.client.core.Models
+﻿namespace ClearBlade.API.dotnet.client.core.Models
 {
     public class ServiceAccountDetails
     {
-        public string systemKey { get; set; }
-        public string token { get; set; }
-        public string url { get; set; }
-        public string project { get; set; }
+        public string SystemKey { get; set; }
+        public string Token { get; set; }
+        public string Url { get; set; }
+        public string Project { get; set; }
 
         public ServiceAccountDetails()
         {
-            systemKey = string.Empty;
-            token = string.Empty;
-            url = string.Empty;
-            project = string.Empty;
+            SystemKey = string.Empty;
+            Token = string.Empty;
+            Url = string.Empty;
+            Project = string.Empty;
         }
     }
 }

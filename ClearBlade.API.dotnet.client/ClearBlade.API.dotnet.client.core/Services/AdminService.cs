@@ -47,11 +47,11 @@ namespace ClearBlade.API.dotnet.client.core.Services
                     return false;
                 }
 
-                HttpLoggingHandler handler = new HttpLoggingHandler(_accountDetails.token);
-                string baseUrl = _accountDetails.url;
+                HttpLoggingHandler handler = new HttpLoggingHandler(_accountDetails.Token);
+                string baseUrl = _accountDetails.Url;
                 _api = RestService.For<IAdminServiceContract>(new HttpClient(handler)
                 {
-                    BaseAddress = new Uri(_accountDetails.url)
+                    BaseAddress = new Uri(_accountDetails.Url)
                 });
             }
             catch (Exception ee)
@@ -73,7 +73,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <returns>Success / Failure and RegistryKeyModel</returns>
         public async Task<(bool, RegistryKeyModel?)> GetRegistryCredentials(RegistryModel registry)
         {
-            _logger.LogInformation("Getting registry credentials for registry {registry}.", registry.registry);
+            _logger.LogInformation("Getting registry credentials for registry {registry}.", registry.Registry);
 
             try
             {
@@ -81,7 +81,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 if (!Initialize() || (_accountDetails == null) || (_api == null))
                     return (false, null);
 
-                var response = await _api.GetRegistryCredentials(_accountDetails.systemKey, registry);
+                var response = await _api.GetRegistryCredentials(_accountDetails.SystemKey, registry);
                 if (response.IsSuccessStatusCode && response.Content != null)
                 {
                     _logger.LogInformation("Successfully obtained registry credentials", response.Content);

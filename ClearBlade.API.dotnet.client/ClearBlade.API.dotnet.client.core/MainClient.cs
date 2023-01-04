@@ -98,8 +98,8 @@ namespace ClearBlade.API.dotnet.client.core
                 return (false, null);
 
             DeviceCreateModel model = new DeviceCreateModel();
-            model.id = deviceIdIn;
-            model.name = deviceNameIn;
+            model.Id = deviceIdIn;
+            model.Name = deviceNameIn;
 
             return await _deviceSvc.CreateDevice(version, model);
         }
@@ -121,8 +121,8 @@ namespace ClearBlade.API.dotnet.client.core
                 return (false, null);
 
             DeviceCreateModel model = new DeviceCreateModel();
-            model.id = deviceIdIn;
-            model.name = deviceNameIn;
+            model.Id = deviceIdIn;
+            model.Name = deviceNameIn;
 
             return await _deviceSvc.DeleteDevice(version, model);
         }
