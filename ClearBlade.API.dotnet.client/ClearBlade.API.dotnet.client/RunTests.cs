@@ -42,8 +42,8 @@ namespace ClearBlade.API.dotnet.client
             // bTest004 = true;
             // bTest005 = true;
             // bTest006 = true;
-            bTest013 = true;
-            // bAllTests = true;
+            //bTest013 = true;
+             bAllTests = true;
 
             logger.LogInformation("Running selected DotNet SDK tests");
 
