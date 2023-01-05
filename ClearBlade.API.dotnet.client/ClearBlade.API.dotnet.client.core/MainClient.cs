@@ -25,11 +25,11 @@ namespace ClearBlade.API.dotnet.client.core
         public async Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(int version, string parentPath)
         {
             // Initialize the service
-            if(!await _deviceSvc.Initialize(parentPath))
+            if (!await _deviceSvc.Initialize(parentPath))
                 return (false, new List<DeviceModel>());
 
             // call method GetDevicesList
-            var res =  await _deviceSvc.GetDevicesList(version, parentPath);
+            var res = await _deviceSvc.GetDevicesList(version, parentPath, null);
             return res;
         }
 
@@ -43,7 +43,7 @@ namespace ClearBlade.API.dotnet.client.core
         public async Task<bool> SendCommandToDevice(int version, string deviceName, object body)
         {
             // Initialize the service
-            if(!await _deviceSvc.Initialize(deviceName))
+            if (!await _deviceSvc.Initialize(deviceName))
                 return false;
 
             return await _deviceSvc.PostCommandToDevice(version, deviceName, "sendCommandToDevice", body);
@@ -75,7 +75,7 @@ namespace ClearBlade.API.dotnet.client.core
         public async Task<bool> DeviceSetState(int version, string deviceName, object body)
         {
             // Initialize the service
-            if(!await _deviceSvc.Initialize(deviceName))
+            if (!await _deviceSvc.Initialize(deviceName))
                 return false;
 
             return await _deviceSvc.PostToDevice(version, deviceName, "setState", body);
@@ -117,7 +117,7 @@ namespace ClearBlade.API.dotnet.client.core
         public async Task<(bool, int?)> DeleteDevice(int version, string deviceIdIn, string deviceNameIn)
         {
             // Initialize the service
-            if (! await _deviceSvc.Initialize(deviceNameIn))
+            if (!await _deviceSvc.Initialize(deviceNameIn))
                 return (false, null);
 
             DeviceCreateModel model = new DeviceCreateModel();
@@ -136,8 +136,8 @@ namespace ClearBlade.API.dotnet.client.core
         public async Task<(bool, DeviceModel?)> GetDevice(int version, string deviceNameIn)
         {
             // Initialize the service
-            if(! await _deviceSvc.Initialize(deviceNameIn))
-                return(false, null);
+            if (!await _deviceSvc.Initialize(deviceNameIn))
+                return (false, null);
 
             return await _deviceSvc.GetDevice(version, deviceNameIn);
         }
@@ -169,7 +169,7 @@ namespace ClearBlade.API.dotnet.client.core
         public async Task<bool> BindDeviceToGateway(int version, string parent, string gatewayId, string deviceId)
         {
             // Initialize the service
-            if(! await _deviceSvc.Initialize(parent))
+            if (!await _deviceSvc.Initialize(parent))
                 return false;
 
             return await _deviceSvc.DeviceToGateway(version, parent, "bindDeviceToGateway", new DeviceToGatewayModel(gatewayId, deviceId));
@@ -204,7 +204,7 @@ namespace ClearBlade.API.dotnet.client.core
         public async Task<(bool, RegistryConfigModel?)> GetRegistryConfig(int version, string name)
         {
             // Initialize the service
-            if(! await _deviceSvc.Initialize(name))
+            if (!await _deviceSvc.Initialize(name))
                 return (false, null);
 
             return await _deviceSvc.GetRegistryConfig(version, name);

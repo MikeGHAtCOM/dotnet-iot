@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClearBlade.API.dotnet.client.core.Models;
+﻿using ClearBlade.API.dotnet.client.core.Models;
 using Refit;
 
 namespace ClearBlade.API.dotnet.client.core.Services
@@ -18,7 +13,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="parentPath"></param>
         /// <returns>An object which contains list of device model objects</returns>
         [Get("/api/v/{version}/webhook/execute/{system_key}/cloudiot_devices")]
-        Task<IApiResponse<DeviceCollection>> GetDevicesList(int version, string system_key, [AliasAs("parent")] string parentPath);
+        Task<IApiResponse<DeviceCollection>> GetDevicesList(int version, string system_key, [AliasAs("parent")] string parentPath, [AliasAs("gatewayListOptions")] GatewayListOptionsModel? gatewayOptions);
 
         /// <summary>
         /// A generic api to post any command related to Devices

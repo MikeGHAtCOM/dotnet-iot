@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/ClearBlade.API.dotnet.client/.vs
+/.vscode
+/ClearBlade.API.dotnet.client/ClearBlade.API.dotnet.client
+/ClearBlade.API.dotnet.client/ClearBlade.API.dotnet.client.core/bin/Debug/net6.0
+/ClearBlade.API.dotnet.client/ClearBlade.API.dotnet.client.core/obj

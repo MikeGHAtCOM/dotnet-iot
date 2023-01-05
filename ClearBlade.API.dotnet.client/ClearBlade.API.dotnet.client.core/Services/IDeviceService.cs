@@ -1,9 +1,4 @@
 ﻿using ClearBlade.API.dotnet.client.core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClearBlade.API.dotnet.client.core.Services
 {
@@ -26,8 +21,9 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// </summary>
         /// <param name="version"></param>
         /// <param name="parentPath"></param>
+        /// <param name="gatewayOptions"></param>
         /// <returns>List of Devices</returns>
-        Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(int version, string parentPath);
+        Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(int version, string parentPath, GatewayListOptionsModel? gatewayOptions);
         /// <summary>
         /// A generic api to call any post method related to Devices
         /// </summary>

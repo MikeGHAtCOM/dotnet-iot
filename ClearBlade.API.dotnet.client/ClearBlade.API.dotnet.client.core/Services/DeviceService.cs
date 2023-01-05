@@ -1,13 +1,6 @@
 ﻿using ClearBlade.API.dotnet.client.core.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Refit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClearBlade.API.dotnet.client.core.Services
 {
@@ -60,7 +53,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
 
                 for (int i = 0; i < vs.Length; i++)
                 {
-                    if(string.Compare(vs[i], "projects",true) == 0)
+                    if (string.Compare(vs[i], "projects", true) == 0)
                     {
                         i++; // Next item in array will be 
                         rm.Project = vs[i];
@@ -79,7 +72,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
 
                 // Further use the admin account to obtain api token etc.
                 var rmKeyRes = await _adminSvc.GetRegistryCredentials(rm);
-                if(!rmKeyRes.Item1 || (rmKeyRes.Item2 == null))
+                if (!rmKeyRes.Item1 || (rmKeyRes.Item2 == null))
                     return false;
 
                 rkm = rmKeyRes.Item2;
@@ -113,15 +106,16 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// </summary>
         /// <param name="version"></param>
         /// <param name="parentPath"></param>
+        /// <param name="gatewayOptions"></param>
         /// <returns>List of Devices</returns>
-        public async Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(int version, string parentPath)
+        public async Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(int version, string parentPath, GatewayListOptionsModel? gatewayOptions)
         {
             try
             {
                 _logger.LogInformation("Getting devices list for parent {parentPath}.", parentPath);
                 if (_api == null)
                     return (false, new List<DeviceModel>());
-                var response = await _api.GetDevicesList(version, rkm.SystemKey, parentPath);
+                var response = await _api.GetDevicesList(version, rkm.SystemKey, parentPath, gatewayOptions);
                 if (response.IsSuccessStatusCode && response.Content != null)
                 {
                     _logger.LogInformation("Found {y} devices", response.Content.Devices.Count);
