@@ -125,7 +125,7 @@ namespace ClearBlade.API.dotnet.client
                     string id = "Sample-New-Device";
                     string name = "projects/developmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Sample-New-Device";
 
-                    var result = await mClient.CreateDevice(4, id, name, null);
+                    var result = await mClient.CreateDevice(4, id, name, null, null);
                     if (!result.Item1 || (result.Item2 == null))
                         logger.LogError("Failed to create new device");
                     else
@@ -378,7 +378,7 @@ namespace ClearBlade.API.dotnet.client
                         }
                     };
 
-                    var result = await mClient.CreateDevice(4, id, name, credentials);
+                    var result = await mClient.CreateDevice(4, id, name, credentials, null);
                     if (!result.Item1 || (result.Item2 == null))
                         logger.LogError("Failed to create new device");
                     else
@@ -411,7 +411,7 @@ namespace ClearBlade.API.dotnet.client
                         }
                     };
 
-                    var result = await mClient.CreateDevice(4, id, name, credentials);
+                    var result = await mClient.CreateDevice(4, id, name, credentials, null);
                     if (!result.Item1 || (result.Item2 == null))
                         logger.LogError("Failed to create new device");
                     else
@@ -539,6 +539,45 @@ namespace ClearBlade.API.dotnet.client
                     else
                     {
                         logger.LogInformation("Successfully deleted the device");
+                    }
+                }
+
+                // Sample - Create a gateway
+                if (bCreateDeviceEC)
+                {
+                    logger.LogInformation("Create a new gateway");
+
+                    string id = "Sample-New-Gateway";
+                    string name = "projects/developmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Sample-New-Gateway";
+
+                    String keyText = File.ReadAllText("path/to/key");
+
+                    var credentials = new List<DeviceCredential>
+                    {
+                        new DeviceCredential()
+                        {
+                            PublicKey = new PublicKeyCredential()
+                            {
+                                Key = keyText,
+                                Format = "ES256_PEM"
+                            },
+                        }
+                    };
+
+                    var gatewayConfig = new GatewayConfig()
+                    {
+                        GatewayType = "GATEWAY",
+                        GatewayAuthMethod = "ASSOCIATION_ONLY"
+                    };
+
+                    var result = await mClient.CreateDevice(4, id, name, credentials, gatewayConfig);
+                    if (!result.Item1 || (result.Item2 == null))
+                        logger.LogError("Failed to create new device");
+                    else
+                    {
+                        logger.LogInformation("Successfully created new device");
+
+                        // The result.Item2 object can be used to refer to newly created device
                     }
                 }
                 //Console.ReadLine();

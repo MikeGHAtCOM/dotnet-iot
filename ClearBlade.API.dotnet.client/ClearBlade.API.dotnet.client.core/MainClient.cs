@@ -94,7 +94,7 @@ namespace ClearBlade.API.dotnet.client.core
         /// <param name="deviceNameIn"></param>
         /// <param name="credentials"></param>
         /// <returns>Success / Failure + Device Model</returns>
-        public async Task<(bool, DeviceCreateResponseModel?)> CreateDevice(int version, string deviceIdIn, string deviceNameIn, List<DeviceCredential>? credentials)
+        public async Task<(bool, DeviceCreateResponseModel?)> CreateDevice(int version, string deviceIdIn, string deviceNameIn, List<DeviceCredential>? credentials, GatewayConfig? gatewayConfig)
         {
             // Initialize the service
             if (!await _deviceSvc.Initialize(deviceNameIn))
@@ -104,6 +104,7 @@ namespace ClearBlade.API.dotnet.client.core
             model.Id = deviceIdIn;
             model.Name = deviceNameIn;
             model.Credentials = credentials ?? model.Credentials;
+            model.GatewayConfig = gatewayConfig ?? model.GatewayConfig;
 
             return await _deviceSvc.CreateDevice(version, model);
         }

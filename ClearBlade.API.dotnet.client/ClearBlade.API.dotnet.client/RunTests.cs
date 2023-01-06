@@ -70,7 +70,7 @@ namespace ClearBlade.API.dotnet.client
                     logger.LogInformation("Running Test-001 - Obtain list of devices for a particular registry");
 
                     // Create a device to verify if result is correct
-                    var resultPre = await mClient.CreateDevice(4, "Test-001-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-001-Device", null);
+                    var resultPre = await mClient.CreateDevice(4, "Test-001-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-001-Device", null, null);
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
                     {
                         logger.LogError("Test-001 - Create Device - Failed");
@@ -116,7 +116,7 @@ namespace ClearBlade.API.dotnet.client
                     };
 
                     // Create new device to send command to
-                    var resultPre = await mClient.CreateDevice(4, "Test-002-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Test-002-Device", null);
+                    var resultPre = await mClient.CreateDevice(4, "Test-002-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Test-002-Device", null, null);
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
                         logger.LogError("Test-002 - Failed");
 
@@ -142,7 +142,7 @@ namespace ClearBlade.API.dotnet.client
                 if (bTest003 || bAllTests)
                 {
                     // Create new device to send command to
-                    var resultPre = await mClient.CreateDevice(4, "Test-003-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Test-003-Device", null);
+                    var resultPre = await mClient.CreateDevice(4, "Test-003-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Test-003-Device", null, null);
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
                         logger.LogError("Test-003 - Failed");
 
@@ -172,7 +172,7 @@ namespace ClearBlade.API.dotnet.client
                     await mClient.DeleteDevice(4, "Test-004-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-004-Device");
 
                     // Create new device
-                    var result004 = await mClient.CreateDevice(4, "Test-004-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-004-Device", null);
+                    var result004 = await mClient.CreateDevice(4, "Test-004-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-004-Device", null, null);
                     if (!result004.Item1 || (result004.Item2 == null))
                         logger.LogError("Test-004 - Failed");
                     else
@@ -214,7 +214,7 @@ namespace ClearBlade.API.dotnet.client
                     logger.LogInformation("Running Test-005 - Delete Device");
 
                     // First create a device to delete it
-                    var resultPre = await mClient.CreateDevice(4, "Test-005-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-005-Device", null);
+                    var resultPre = await mClient.CreateDevice(4, "Test-005-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-005-Device", null, null);
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
                         logger.LogError("Test-005 - Failed");
                     else
@@ -241,7 +241,7 @@ namespace ClearBlade.API.dotnet.client
                     logger.LogInformation("Running Test-006 - Get Device");
 
                     // First create a device to get its details
-                    var resultPre = await mClient.CreateDevice(4, "Test-006-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-006-Device", null);
+                    var resultPre = await mClient.CreateDevice(4, "Test-006-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-006-Device", null, null);
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
                         logger.LogError("Test-006 - Failed");
 
@@ -267,7 +267,7 @@ namespace ClearBlade.API.dotnet.client
                     logger.LogInformation("Running Test-007 - Get Device");
 
                     // First create a device to get its configuration details
-                    var resultPre = await mClient.CreateDevice(4, "Test-007-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-007-Device", null);
+                    var resultPre = await mClient.CreateDevice(4, "Test-007-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-007-Device", null, null);
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
                         logger.LogError("Test-007 - Failed - Failed while creating new device");
 
@@ -302,7 +302,7 @@ namespace ClearBlade.API.dotnet.client
                     logger.LogInformation("Running Test-008 - Get Device");
 
                     // First create a device to get its configuration details
-                    var resultPre = await mClient.CreateDevice(4, "Test-008-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-008-Device", null);
+                    var resultPre = await mClient.CreateDevice(4, "Test-008-Device", "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-008-Device", null, null);
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
                         logger.LogError("Test-008 - Failed - Failed while creating new device");
 
@@ -430,7 +430,7 @@ namespace ClearBlade.API.dotnet.client
                     string deviceName = "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-012-Device";
 
                     // First create a device to add config versions
-                    var resultPre = await mClient.CreateDevice(4, "Test-012-Device", deviceName, null);
+                    var resultPre = await mClient.CreateDevice(4, "Test-012-Device", deviceName, null, null);
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
                         logger.LogError("Test-012 - Failed");
 
@@ -480,7 +480,7 @@ namespace ClearBlade.API.dotnet.client
                     string deviceName = "projects/ingressdevelopmentenv/locations/us-central1/registries/Sample-New-Registry/Devices/Test-013-Device";
 
                     // First create a device to add config versions
-                    var resultPre = await mClient.CreateDevice(4, "Test-013-Device", deviceName, null);
+                    var resultPre = await mClient.CreateDevice(4, "Test-013-Device", deviceName, null, null);
                     if (!resultPre.Item1 || (resultPre.Item2 == null))
                         logger.LogError("Test-013 - Failed");
 

@@ -107,13 +107,17 @@
 
     public class GatewayConfig
     {
-        public string lastAccessedGatewayId { get; set; }
-        public string lastAccessedGatewayTime { get; set; }
+        public string LastAccessedGatewayId { get; set; }
+        public string LastAccessedGatewayTime { get; set; }
+        public string GatewayType { get; set; }
+        public string GatewayAuthMethod { get; set; }
 
         public GatewayConfig()
         {
-            lastAccessedGatewayId = string.Empty;
-            lastAccessedGatewayTime = string.Empty;
+            LastAccessedGatewayId = string.Empty;
+            LastAccessedGatewayTime = string.Empty;
+            GatewayType = string.Empty;
+            GatewayAuthMethod = string.Empty;
         }
     }
 
