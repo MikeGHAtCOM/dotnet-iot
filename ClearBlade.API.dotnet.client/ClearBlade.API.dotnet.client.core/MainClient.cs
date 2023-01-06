@@ -10,10 +10,12 @@ namespace ClearBlade.API.dotnet.client.core
     public class MainClient
     {
         private readonly IDeviceService _deviceSvc;
+        private readonly IRegistryService _registrySvc;
 
-        public MainClient(IDeviceService deviceSvc)
+        public MainClient(IDeviceService deviceSvc, IRegistryService registrySvc)
         {
             _deviceSvc = deviceSvc;
+            _registrySvc = registrySvc;
         }
         /// <summary>
         /// Helper class method to get the list of devices from ClearBlade IOT
@@ -22,14 +24,14 @@ namespace ClearBlade.API.dotnet.client.core
         /// <param name="parentPath"></param>
         /// <returns>Result true or false in the segment Item1 and actual list of devices in the
         /// segment Item2</returns>
-        public async Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(int version, string parentPath)
+        public async Task<(bool, IEnumerable<DeviceModel>)> GetDevicesList(int version, string parentPath, GatewayListOptionsModel? gatewayOptions)
         {
             // Initialize the service
             if (!await _deviceSvc.Initialize(parentPath))
                 return (false, new List<DeviceModel>());
 
             // call method GetDevicesList
-            var res = await _deviceSvc.GetDevicesList(version, parentPath, null);
+            var res = await _deviceSvc.GetDevicesList(version, parentPath, gatewayOptions);
             return res;
         }
 
@@ -90,8 +92,9 @@ namespace ClearBlade.API.dotnet.client.core
         /// <param name="accessToken"></param>
         /// <param name="deviceIdIn"></param>
         /// <param name="deviceNameIn"></param>
+        /// <param name="credentials"></param>
         /// <returns>Success / Failure + Device Model</returns>
-        public async Task<(bool, DeviceCreateResponseModel?)> CreateDevice(int version, string deviceIdIn, string deviceNameIn)
+        public async Task<(bool, DeviceCreateResponseModel?)> CreateDevice(int version, string deviceIdIn, string deviceNameIn, List<DeviceCredential>? credentials)
         {
             // Initialize the service
             if (!await _deviceSvc.Initialize(deviceNameIn))
@@ -100,6 +103,7 @@ namespace ClearBlade.API.dotnet.client.core
             DeviceCreateModel model = new DeviceCreateModel();
             model.Id = deviceIdIn;
             model.Name = deviceNameIn;
+            model.Credentials = credentials ?? model.Credentials;
 
             return await _deviceSvc.CreateDevice(version, model);
         }
@@ -274,6 +278,37 @@ namespace ClearBlade.API.dotnet.client.core
                 return (false, null);
 
             return await _deviceSvc.GetDeviceStateList(version, name, numStates);
+        }
+
+        /// <summary>
+        /// Helper class method to create a registry
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="parentPath"></param>
+        /// <param name="registryConfigModel"></param>
+        /// <returns></returns>
+        public async Task<(bool, RegistryConfigModel?)> CreateRegistry(int version, string parentPath, RegistryConfigModel registryConfigModel)
+        {
+            // Initialize the service
+            if (!_registrySvc.Initialize())
+                return (false, null);
+
+            return await _registrySvc.CreateRegistry(version, parentPath, registryConfigModel);
+        }
+
+        /// <summary>
+        /// Helper class method to delete a registry
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="registryName"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteRegistry(int version, string registryName)
+        {
+            // Initialize the service
+            if (!_registrySvc.Initialize())
+                return false;
+
+            return await _registrySvc.DeleteRegistry(version, registryName);
         }
     }
 }

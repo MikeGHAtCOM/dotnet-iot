@@ -5,7 +5,7 @@
         public string Id { get; set; }
         public string Name { get; set; }
         public string NumId { get; set; }
-        public List<object> Credentials { get; set; }
+        public List<DeviceCredential> Credentials { get; set; }
         public string LastHeartbeatTime { get; set; }
         public string LastEventTime { get; set; }
         public string LastStateTime { get; set; }
@@ -25,7 +25,7 @@
             Id = String.Empty;
             Name = String.Empty;
             NumId = String.Empty;
-            Credentials = new List<object>();
+            Credentials = new List<DeviceCredential>();
             LastHeartbeatTime = String.Empty;
             LastEventTime = String.Empty;
             LastStateTime = String.Empty;

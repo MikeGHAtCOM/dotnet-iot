@@ -5,7 +5,7 @@
         public string Id { get; set; }
         public string Name { get; set; }
         public int NumId { get; set; }
-        public List<object> Credentials { get; set; }
+        public List<DeviceCredential> Credentials { get; set; }
         public LastErrorStatus LastErrorStatus { get; set; }
         public Config Config { get; set; }
         public State State { get; set; }
@@ -18,7 +18,7 @@
             Id = String.Empty;
             Name = String.Empty;
             NumId = 0;
-            Credentials = new List<object>();
+            Credentials = new List<DeviceCredential>();
             LastErrorStatus = new LastErrorStatus();
             Config = new Config();
             State = new State();

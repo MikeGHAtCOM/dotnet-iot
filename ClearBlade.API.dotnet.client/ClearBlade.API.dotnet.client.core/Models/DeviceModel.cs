@@ -12,18 +12,6 @@
         }
     }
 
-    public class Credential
-    {
-        public string ExpirationTime { get; set; }
-        public PublicKey PublicKey { get; set; }
-
-        public Credential()
-        {
-            ExpirationTime = String.Empty;
-            PublicKey = new PublicKey();
-        }
-    }
-
     public class DeviceCollection
     {
         public List<DeviceModel> Devices { get; set; }
@@ -31,6 +19,45 @@
         public DeviceCollection()
         {
             Devices = new List<DeviceModel>();
+        }
+    }
+
+    public class DeviceCredential
+    {
+        public object? ExpirationTime { get; set; }
+        public PublicKeyCredential PublicKey { get; set; }
+        public string ETag { get; set; }
+
+        public DeviceCredential()
+        {
+            PublicKey = new PublicKeyCredential();
+            ETag = string.Empty;
+        }
+        public DeviceCredential(object expirationTime, PublicKeyCredential publicKey, string eTag)
+        {
+            ExpirationTime = expirationTime;
+            PublicKey = publicKey;
+            ETag = eTag;
+        }
+    }
+
+    public class PublicKeyCredential
+    {
+        public string Format { get; set; }
+        public string Key { get; set; }
+        public string ETag { get; set; }
+
+        public PublicKeyCredential()
+        {
+            Format = String.Empty;
+            Key = String.Empty;
+            ETag = String.Empty;
+        }
+        public PublicKeyCredential(string format, string key, string eTag)
+        {
+            Format = format;
+            Key = key;
+            ETag = eTag;
         }
     }
 
@@ -42,7 +69,7 @@
         public string Id { get; set; }
         public string Name { get; set; }
         public string NumId { get; set; }
-        public List<Credential> Credentials { get; set; }
+        public List<DeviceCredential> Credentials { get; set; }
         public string LastHeartbeatTime { get; set; }
         public string LastEventTime { get; set; }
         public string LastStateTime { get; set; }
@@ -62,7 +89,7 @@
             Id = string.Empty;
             Name = string.Empty;
             NumId = string.Empty;
-            Credentials = new List<Credential>();
+            Credentials = new List<DeviceCredential>();
             LastHeartbeatTime = string.Empty;
             LastEventTime = string.Empty;
             LastStateTime = string.Empty;
