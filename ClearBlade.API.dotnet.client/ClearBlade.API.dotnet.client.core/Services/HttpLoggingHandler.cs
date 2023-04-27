@@ -58,7 +58,10 @@ namespace ClearBlade.API.dotnet.client.core.Services
             Debug.WriteLine($"{msg} {req.Method} {req?.RequestUri?.PathAndQuery} {req?.RequestUri?.Scheme}/{req?.Version}");
             Debug.WriteLine($"{msg} Host: {req?.RequestUri?.Scheme}://{req?.RequestUri?.Host}");
 
+#pragma warning disable S2589 // Boolean expressions should not be gratuitous
             if (req != null)
+#pragma warning restore S2589 // Boolean expressions should not be gratuitous
+
             {
                 foreach (var header in req.Headers)
                     Debug.WriteLine($"{msg} {header.Key}: {string.Join(", ", header.Value)}");
@@ -70,7 +73,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
 
                     if (req.Content is StringContent || this.IsTextBasedContentType(req.Headers) || this.IsTextBasedContentType(req.Content.Headers))
                     {
-                        var result = await req.Content.ReadAsStringAsync();
+                        var result = await req.Content.ReadAsStringAsync(cancellationToken);
 
                         Debug.WriteLine($"{msg} Content:");
                         Debug.WriteLine($"{msg} {string.Join("", result.Cast<char>().Take(255))}...");
@@ -109,7 +112,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 if (resp.Content is StringContent || this.IsTextBasedContentType(resp.Headers) || this.IsTextBasedContentType(resp.Content.Headers))
                 {
                     start = DateTime.Now;
-                    var result = await resp.Content.ReadAsStringAsync();
+                    var result = await resp.Content.ReadAsStringAsync(cancellationToken);
                     end = DateTime.Now;
 
                     Debug.WriteLine($"{msg} Content:");

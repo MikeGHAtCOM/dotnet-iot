@@ -47,6 +47,6 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="registry"></param>
         /// <returns>RegistryKeyModel</returns>
         [Post("/api/v/1/code/{admin_system_key}/getRegistryCredentials")]
-        Task<IApiResponse<RegistryKeyModel>> GetRegistryCredentials(string admin_system_key, [Body] RegistryModel registry);
+        Task<IApiResponse<RegistryKeyModel>> GetRegistryCredentialsAsync(string admin_system_key, [Body] RegistryModel registry);
     }
 }

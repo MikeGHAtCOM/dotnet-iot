@@ -34,7 +34,9 @@ namespace ClearBlade.API.dotnet.client.core.Models
     {
         public string SystemKey { get; set; }
         public string ServiceAccountToken { get; set; }
+#pragma warning disable IDE1006 // Naming Styles
         public string url { get; set; }
+#pragma warning restore IDE1006 // Naming Styles
 
         public RegistryKeyModel()
         {

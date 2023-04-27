@@ -48,13 +48,13 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="parentPath"></param>
         /// <param name="registryConfigModel"></param>
         /// <returns>RegistryConfigModel</returns>
-        Task<(bool, RegistryConfigModel?)> CreateRegistry(int version, string parentPath, RegistryConfigModel registryConfigModel);
+        Task<(bool, RegistryConfigModel?)> CreateRegistryAsync(int version, string parentPath, RegistryConfigModel registryConfigModel);
 
         /// <summary>
         /// Api to delete a registry
         /// </summary>
         /// <param name="version"></param>
         /// <returns>Success / Failure</returns>
-        Task<bool> DeleteRegistry(int version, string registryName);
+        Task<bool> DeleteRegistryAsync(int version, string registryName);
     }
 }

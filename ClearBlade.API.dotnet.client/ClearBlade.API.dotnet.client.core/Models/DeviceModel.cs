@@ -30,7 +30,6 @@
  
 namespace ClearBlade.API.dotnet.client.core.Models
 {
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
     public class Config
     {
         public DateTime CloudUpdateTime { get; set; }
@@ -153,7 +152,9 @@ namespace ClearBlade.API.dotnet.client.core.Models
 
     public class LastErrorStatus
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Needs to match JSON")]
         public int code { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Needs to match JSON")]
         public string message { get; set; }
 
         public LastErrorStatus()
@@ -162,13 +163,17 @@ namespace ClearBlade.API.dotnet.client.core.Models
         }
     }
 
+#pragma warning disable S2094 // Classes should not be empty
     public class Metadata
+#pragma warning restore S2094 // Classes should not be empty
     {
     }
 
     public class PublicKey
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Needs to match JSON")]
         public string format { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Needs to match JSON")]
         public string key { get; set; }
 
         public PublicKey()
@@ -180,7 +185,9 @@ namespace ClearBlade.API.dotnet.client.core.Models
 
     public class State
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Needs to match JSON")]
         public string updateTime { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Needs to match JSON")]
         public string binaryData { get; set; }
 
         public State()

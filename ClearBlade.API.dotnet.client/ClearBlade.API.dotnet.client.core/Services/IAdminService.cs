@@ -45,6 +45,6 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="admin_system_key"></param>
         /// <param name="registry"></param>
         /// <returns>Success / Failure and RegistryKeyModel</returns>
-        Task<(bool, RegistryKeyModel?)> GetRegistryCredentials(RegistryModel registry);
+        Task<(bool, RegistryKeyModel?)> GetRegistryCredentialsAsync(RegistryModel registry);
     }
 }

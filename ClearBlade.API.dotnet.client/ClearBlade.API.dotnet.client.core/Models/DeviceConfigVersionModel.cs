@@ -42,7 +42,9 @@ namespace ClearBlade.API.dotnet.client.core.Models
     }
     public class DeviceConfigVersions
     {
+#pragma warning disable IDE1006 // Naming Styles
         public List<DeviceConfigVersionModel> deviceConfigs { get; set; }
+#pragma warning restore IDE1006 // Naming Styles
 
         public DeviceConfigVersions()
         {

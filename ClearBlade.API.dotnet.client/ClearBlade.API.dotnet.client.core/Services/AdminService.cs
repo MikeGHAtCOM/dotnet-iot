@@ -60,7 +60,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
             {
                 // First get the location of Service account private key json
                 // using windows environment (system) variable named "CLEARBLADE_CONFIGURATION"
-                var jsonPath = System.Environment.GetEnvironmentVariable("CLEARBLADE_CONFIGURATION", EnvironmentVariableTarget.Machine);
+                var jsonPath = System.Environment.GetEnvironmentVariable("CLEARBLADE_CONFIGURATION", EnvironmentVariableTarget.Process);
                 if (string.IsNullOrEmpty(jsonPath))
                 {
                     _logger.LogError("Failed to get value of Windows system environment variable \"CLEARBLADE_CONFIGURATION\"");
@@ -77,8 +77,9 @@ namespace ClearBlade.API.dotnet.client.core.Services
                     return false;
                 }
 
+#pragma warning disable IDE0090 // Use 'new(...)'
                 HttpLoggingHandler handler = new HttpLoggingHandler(_accountDetails.Token);
-                string baseUrl = _accountDetails.Url;
+#pragma warning restore IDE0090 // Use 'new(...)'
                 _api = RestService.For<IAdminServiceContract>(new HttpClient(handler)
                 {
                     BaseAddress = new Uri(_accountDetails.Url)
@@ -101,7 +102,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="admin_system_key"></param>
         /// <param name="registry"></param>
         /// <returns>Success / Failure and RegistryKeyModel</returns>
-        public async Task<(bool, RegistryKeyModel?)> GetRegistryCredentials(RegistryModel registry)
+        public async Task<(bool, RegistryKeyModel?)> GetRegistryCredentialsAsync(RegistryModel registry)
         {
             _logger.LogInformation("Getting registry credentials for registry {registry}.", registry.Registry);
 
@@ -111,7 +112,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 if (!Initialize() || (_accountDetails == null) || (_api == null))
                     return (false, null);
 
-                var response = await _api.GetRegistryCredentials(_accountDetails.SystemKey, registry);
+                var response = await _api.GetRegistryCredentialsAsync(_accountDetails.SystemKey, registry);
                 if (response.IsSuccessStatusCode && response.Content != null)
                 {
                     _logger.LogInformation("Successfully obtained registry credentials", response.Content);

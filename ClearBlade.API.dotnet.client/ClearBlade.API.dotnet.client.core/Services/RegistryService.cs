@@ -35,7 +35,7 @@ using Refit;
 
 namespace ClearBlade.API.dotnet.client.core.Services
 {
-    internal class RegistryService : IRegistryService
+    public class RegistryService : IRegistryService
     {
         private readonly ILogger<RegistryService> _logger;
         private IRegistryServiceContract? _api;
@@ -77,8 +77,9 @@ namespace ClearBlade.API.dotnet.client.core.Services
                     return false;
                 }
 
+#pragma warning disable IDE0090 // Use 'new(...)'
                 HttpLoggingHandler handler = new HttpLoggingHandler(_accountDetails.Token);
-                string baseUrl = _accountDetails.Url;
+#pragma warning restore IDE0090 // Use 'new(...)'
                 _api = RestService.For<IRegistryServiceContract>(new HttpClient(handler)
                 {
                     BaseAddress = new Uri(_accountDetails.Url)
@@ -98,7 +99,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// </summary>
         /// <param name="registry"></param>
         /// <returns>Success / Failure</returns>
-        public async Task<(bool, RegistryConfigModel?)> CreateRegistry(int version, string parentPath, RegistryConfigModel registryConfigModel)
+        public async Task<(bool, RegistryConfigModel?)> CreateRegistryAsync(int version, string parentPath, RegistryConfigModel registryConfigModel)
         {
             _logger.LogInformation("Creating registry {registryConfigModel}.", registryConfigModel);
 
@@ -108,7 +109,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 if (!Initialize() || (_accountDetails == null) || (_api == null))
                     return (false, null);
 
-                var response = await _api.CreateRegistry(version, _accountDetails.SystemKey, parentPath, registryConfigModel);
+                var response = await _api.CreateRegistryAsync(version, _accountDetails.SystemKey, parentPath, registryConfigModel);
                 if (response.IsSuccessStatusCode && response.Content != null)
                 {
                     _logger.LogInformation("Successfully created registry", response.Content);
@@ -128,7 +129,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
         /// <param name="version"></param>
         /// <param name="registryName"></param>
         /// <returns>Success / Failure</returns>
-        public async Task<bool> DeleteRegistry(int version, string registryName)
+        public async Task<bool> DeleteRegistryAsync(int version, string registryName)
         {
             _logger.LogInformation("Deleting registry {registryName}.", registryName);
 
@@ -138,7 +139,7 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 if (!Initialize() || (_accountDetails == null) || (_api == null))
                     return false;
 
-                var response = await _api.DeleteRegistry(version, _accountDetails.SystemKey, registryName);
+                var response = await _api.DeleteRegistryAsync(version, _accountDetails.SystemKey, registryName);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Successfully deleted registry");
