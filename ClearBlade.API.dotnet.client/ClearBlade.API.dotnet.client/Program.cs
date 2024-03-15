@@ -50,7 +50,7 @@ public class Program
         //do the actual work here
         if ((serviceProvider != null) && (logger != null))
         {
-            RunTests.Execute(serviceProvider, logger);
+          //  RunTests.Execute(serviceProvider, logger);
             RunSamples.Execute(serviceProvider, logger);
         }
     }
@@ -60,6 +60,7 @@ public class Program
         //we will configure logging here
         services.AddLogging(configure => configure.AddConsole())
                 .AddSingleton<IDeviceService, DeviceService>()
+                .AddSingleton<IRegistryService, RegistryService>()
                 .AddSingleton<IAdminService, AdminService>();
     }
 }

@@ -32,6 +32,7 @@ using ClearBlade.API.dotnet.client.core.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Refit;
+using System.Net.Http;
 
 namespace ClearBlade.API.dotnet.client.core.Services
 {
@@ -58,32 +59,44 @@ namespace ClearBlade.API.dotnet.client.core.Services
 
             try
             {
-                // First get the location of Service account private key json
-                // using windows environment (system) variable named "CLEARBLADE_CONFIGURATION"
-                var jsonPath = System.Environment.GetEnvironmentVariable("CLEARBLADE_CONFIGURATION", EnvironmentVariableTarget.Process);
-                if (string.IsNullOrEmpty(jsonPath))
+                var configDetails = System.Environment.GetEnvironmentVariable("CLEARBLADE_CONFIGASVARIABLE", EnvironmentVariableTarget.Process);
+                if (!string.IsNullOrEmpty(configDetails))
                 {
-                    _logger.LogError("Failed to get value of Windows system environment variable \"CLEARBLADE_CONFIGURATION\"");
-
-                    return false;
+                    _accountDetails = JsonConvert.DeserializeObject<ServiceAccountDetails>(configDetails);
                 }
 
-                // Read the details of service account
-                _accountDetails = JsonConvert.DeserializeObject<ServiceAccountDetails>(System.IO.File.ReadAllText(jsonPath));
                 if (_accountDetails == null)
                 {
-                    _logger.LogError("Failed to load service account credentials from json");
+                    // First get the location of Service account private key json
+                    // using windows environment (system) variable named "CLEARBLADE_CONFIGURATION"
+                    var jsonPath = System.Environment.GetEnvironmentVariable("CLEARBLADE_CONFIGURATION", EnvironmentVariableTarget.Process);
+                    if (string.IsNullOrEmpty(jsonPath))
+                    {
+                        _logger.LogError("Failed to get value of Windows system environment variable \"CLEARBLADE_CONFIGURATION\"");
 
-                    return false;
+                        return false;
+                    }
+
+                    // Read the details of service account
+                    _accountDetails = JsonConvert.DeserializeObject<ServiceAccountDetails>(System.IO.File.ReadAllText(jsonPath));
+                    if (_accountDetails == null)
+                    {
+                        _logger.LogError("Failed to load service account credentials from json");
+
+                        return false;
+                    }
                 }
-
 #pragma warning disable IDE0090 // Use 'new(...)'
                 HttpLoggingHandler handler = new HttpLoggingHandler(_accountDetails.Token);
 #pragma warning restore IDE0090 // Use 'new(...)'
                 _api = RestService.For<IAdminServiceContract>(new HttpClient(handler)
                 {
-                    BaseAddress = new Uri(_accountDetails.Url)
+                    BaseAddress = new Uri(_accountDetails.Url),
+#if NET472
+                }, new RefitSettings(new NewtonsoftJsonContentSerializer()));
+#else
                 });
+#endif
             }
             catch (Exception ee)
             {

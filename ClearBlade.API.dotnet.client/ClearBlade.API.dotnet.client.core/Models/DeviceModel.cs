@@ -132,6 +132,48 @@ namespace ClearBlade.API.dotnet.client.core.Models
             Metadata = new Metadata();
             GatewayConfig = new GatewayConfig();
         }
+
+        public DeviceModel(DeviceCreateResponseModel? item2)
+        {
+            if (item2 != null)
+            {
+                Id = item2.Id;
+                Name = item2.Name;
+                NumId = item2.NumId;
+                Credentials = item2.Credentials;
+                LastHeartbeatTime = item2.LastHeartbeatTime;
+                LastEventTime = item2.LastEventTime;
+                LastStateTime = item2.LastStateTime;
+                LastConfigAckTime = item2.LastConfigAckTime;
+                LastConfigSendTime = item2.LastConfigSendTime;
+                LastErrorTime = item2.LastErrorTime;
+                LastErrorStatus = item2.LastErrorStatus;
+                Config = item2.Config;
+                State = item2.State;
+                LogLevel = item2.LogLevel;
+                Metadata = item2.Metadata;
+                GatewayConfig = item2.GatewayConfig;
+            }
+            else
+            {
+                Id = string.Empty;
+                Name = string.Empty;
+                NumId = string.Empty;
+                Credentials = new List<DeviceCredential>();
+                LastHeartbeatTime = string.Empty;
+                LastEventTime = string.Empty;
+                LastStateTime = string.Empty;
+                LastConfigAckTime = string.Empty;
+                LastConfigSendTime = string.Empty;
+                LastErrorTime = string.Empty;
+                LastErrorStatus = new LastErrorStatus();
+                Config = new Config();
+                State = new State();
+                LogLevel = "NONE";
+                Metadata = new Metadata();
+                GatewayConfig = new GatewayConfig();
+            }
+        }
     }
 
     public class GatewayConfig
@@ -164,7 +206,7 @@ namespace ClearBlade.API.dotnet.client.core.Models
     }
 
 #pragma warning disable S2094 // Classes should not be empty
-    public class Metadata
+    public class Metadata : Dictionary<string, string>
 #pragma warning restore S2094 // Classes should not be empty
     {
     }

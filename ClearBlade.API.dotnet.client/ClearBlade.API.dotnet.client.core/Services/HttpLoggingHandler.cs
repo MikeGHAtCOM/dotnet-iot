@@ -73,7 +73,11 @@ namespace ClearBlade.API.dotnet.client.core.Services
 
                     if (req.Content is StringContent || this.IsTextBasedContentType(req.Headers) || this.IsTextBasedContentType(req.Content.Headers))
                     {
+#if NET48
+                        var result = await req.Content.ReadAsStringAsync();
+#else
                         var result = await req.Content.ReadAsStringAsync(cancellationToken);
+#endif
 
                         Debug.WriteLine($"{msg} Content:");
                         Debug.WriteLine($"{msg} {string.Join("", result.Cast<char>().Take(255))}...");
@@ -112,7 +116,11 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 if (resp.Content is StringContent || this.IsTextBasedContentType(resp.Headers) || this.IsTextBasedContentType(resp.Content.Headers))
                 {
                     start = DateTime.Now;
-                    var result = await resp.Content.ReadAsStringAsync(cancellationToken);
+#if NET48
+                    var result = await req.Content.ReadAsStringAsync();
+#else
+                        var result = await req.Content.ReadAsStringAsync(cancellationToken);
+#endif
                     end = DateTime.Now;
 
                     Debug.WriteLine($"{msg} Content:");

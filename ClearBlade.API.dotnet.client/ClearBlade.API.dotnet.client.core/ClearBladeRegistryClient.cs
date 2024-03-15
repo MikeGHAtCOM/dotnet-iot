@@ -138,7 +138,10 @@ namespace ClearBlade.API.dotnet.client.core
             DeviceCreateModel model = new DeviceCreateModel
             {
                 Id = deviceIdIn,
-                Name = deviceNameIn
+                Name = deviceNameIn,
+                LogLevel = "LOG_LEVEL_UNSPECIFIED",
+                State = null,
+                LastErrorStatus = null,
             };
 #pragma warning restore IDE0090 // Use 'new(...)'
             model.Credentials = credentials ?? model.Credentials;

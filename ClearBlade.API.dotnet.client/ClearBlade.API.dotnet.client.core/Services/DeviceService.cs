@@ -31,6 +31,7 @@
 using ClearBlade.API.dotnet.client.core.Models;
 using Microsoft.Extensions.Logging;
 using Refit;
+using System.Net.Http;
 
 namespace ClearBlade.API.dotnet.client.core.Services
 {
@@ -116,7 +117,11 @@ namespace ClearBlade.API.dotnet.client.core.Services
                 _api = RestService.For<IDevicesApiContract>(new HttpClient(handler)
                 {
                     BaseAddress = new Uri(baseUrl)
+#if NET472
+                }, new RefitSettings(new NewtonsoftJsonContentSerializer()));
+#else
                 });
+#endif
             }
             catch (Exception ee)
             {

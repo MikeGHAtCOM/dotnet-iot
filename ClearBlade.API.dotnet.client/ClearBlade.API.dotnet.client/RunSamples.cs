@@ -42,7 +42,7 @@ namespace ClearBlade.API.dotnet.client
     public static class RunSamples
     {
         #region Test Selection
-        static readonly bool bGetDevicesList = false;
+        static readonly bool bGetDevicesList = true;
         static readonly bool bSendCommandToDevice = false;
         static readonly bool bModifyCloudToDeviceConfig = false;
         static readonly bool bCreateDevice = false;
@@ -97,7 +97,7 @@ namespace ClearBlade.API.dotnet.client
                 if (bGetDevicesList)
                 {
                     logger.LogInformation("Obtain list of devices for a particular registry");
-                    var result = await mClient.GetDevicesList(4, "projects/developmentenv/locations/us-central1/registries/Sample-New-Registry", null);
+                    var result = await mClient.GetDevicesList(4, "projects/tdwifiii-functions/locations/europe-west1/registries/thermadatawifi", null);
                     if (!result.Item1)
                         logger.LogError("Failed to get list of devices");
                     else
